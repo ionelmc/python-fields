@@ -37,16 +37,28 @@ def with_cmp(attrs):
             return not result
 
     def lt(self, other):
-        return attrs_to_tuple(self) < attrs_to_tuple(other)
+        if isinstance(other, self.__class__):
+            return attrs_to_tuple(self) < attrs_to_tuple(other)
+        else:
+            return NotImplemented
 
     def le(self, other):
-        return attrs_to_tuple(self) <= attrs_to_tuple(other)
+        if isinstance(other, self.__class__):
+            return attrs_to_tuple(self) <= attrs_to_tuple(other)
+        else:
+            return NotImplemented
 
     def gt(self, other):
-        return attrs_to_tuple(self) > attrs_to_tuple(other)
+        if isinstance(other, self.__class__):
+            return attrs_to_tuple(self) > attrs_to_tuple(other)
+        else:
+            return NotImplemented
 
     def ge(self, other):
-        return attrs_to_tuple(self) >= attrs_to_tuple(other)
+        if isinstance(other, self.__class__):
+            return attrs_to_tuple(self) >= attrs_to_tuple(other)
+        else:
+            return NotImplemented
 
     def hash_(self):
         return hash(attrs_to_tuple(self))

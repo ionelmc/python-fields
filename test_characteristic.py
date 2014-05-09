@@ -54,6 +54,12 @@ class TestWithCmp(object):
         ]:
             assert CmpC(*a) < CmpC(*b)
 
+    def test_lt_unordable(self):
+        """
+        __lt__ returns NotImplemented if classes differ.
+        """
+        assert NotImplemented == (CmpC(1, 2).__lt__(42))
+
     def test_le(self):
         """
         __le__ compares objects as tuples of attribute values.
@@ -67,6 +73,12 @@ class TestWithCmp(object):
         ]:
             assert CmpC(*a) <= CmpC(*b)
 
+    def test_le_unordable(self):
+        """
+        __le__ returns NotImplemented if classes differ.
+        """
+        assert NotImplemented == (CmpC(1, 2).__le__(42))
+
     def test_gt(self):
         """
         __gt__ compares objects as tuples of attribute values.
@@ -77,6 +89,12 @@ class TestWithCmp(object):
             (("b", "a"), ("a", "b")),
         ]:
             assert CmpC(*a) > CmpC(*b)
+
+    def test_gt_unordable(self):
+        """
+        __gt__ returns NotImplemented if classes differ.
+        """
+        assert NotImplemented == (CmpC(1, 2).__gt__(42))
 
     def test_ge(self):
         """
@@ -90,6 +108,12 @@ class TestWithCmp(object):
             (("a", "b"), ("a", "b")),
         ]:
             assert CmpC(*a) >= CmpC(*b)
+
+    def test_ge_unordable(self):
+        """
+        __ge__ returns NotImplemented if classes differ.
+        """
+        assert NotImplemented == (CmpC(1, 2).__ge__(42))
 
     def test_hash(self):
         """
