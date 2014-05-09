@@ -22,11 +22,16 @@ Examples
 Full Features
 ^^^^^^^^^^^^^
 
-Let’s start with all bells and whistles: ``with_attributes`` will add a nice ``__repr__``, comparison methods that compare instances as if their respective attributes would be tuple_\ s, and -- optionally -- an initializer to your class::
+Let’s start with all bells and whistles: ``@attributes([attr1, attr2, …])`` enhances your class by:
 
+- a nice ``__repr__``,
+- comparison methods that compare instances as if they were tuples of their attributes,
+- and – optionally but by default – an initializer that uses the keyword arguments to initialize the specified attributes before running the class’ own initializer.
 
-   >>> from characteristic import with_attributes
-   >>> @with_attributes(["a", "b",], create_init=True)
+::
+
+   >>> from characteristic import attributes
+   >>> @attributes(["a", "b",])
    ... class C(object):
    ...     pass
    >>> obj1 = C(a=1, b="abc")
@@ -46,11 +51,11 @@ The difference to namedtuple_\ s is that classes decorated by ``characteristic``
 
 
    >>> from __future__ import print_function
-   >>> @with_attributes(["a",], create_init=True)
+   >>> @attributes(["a",])
    ... class C1(object):
    ...     def print_a(self):
    ...         print(self.a)
-   >>> @with_attributes(["a",], create_init=True)
+   >>> @attributes(["a",])
    ... class C2(object):
    ...     pass
    >>> c1 = C1(a=1)

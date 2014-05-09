@@ -99,7 +99,7 @@ def with_init(attrs):
     return wrap
 
 
-def with_attributes(attrs, create_init=False):
+def attributes(attrs, create_init=True):
     """
     A class decorator that combines :func:`with_cmp` and :func:`with_repr` to
     avoid code duplication.

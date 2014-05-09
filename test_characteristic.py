@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import pytest
 
 from characteristic import (
-    with_attributes,
+    attributes,
     with_cmp,
     with_init,
     with_repr,
@@ -136,18 +136,45 @@ class TestWithInit(object):
         with pytest.raises(ValueError):
             InitC(a=1, b=1)
 
+    def test_passes_args(self):
+        """
+        All positional parameters are passed to the original initializator.
+        """
+        @with_init(["a"])
+        class InitWithArg(object):
+            def __init__(self, arg):
+                self.arg = arg
 
-@with_attributes(["a", "b"], create_init=True)
+        obj = InitWithArg(42, a=1)
+        assert 42 == obj.arg
+        assert 1 == obj.a
+
+    def test_passes_remaining_kw(self):
+        """
+        Keyword arguments that aren't used for attributes are passed to the
+        original initializator.
+        """
+        @with_init(["a"])
+        class InitWithKWArg(object):
+            def __init__(self, kw_arg=None):
+                self.kw_arg = kw_arg
+
+        obj = InitWithKWArg(a=1, kw_arg=42)
+        assert 42 == obj.kw_arg
+        assert 1 == obj.a
+
+
+@attributes(["a", "b"], create_init=True)
 class MagicWithInitC(object):
     pass
 
 
-@with_attributes(["a", "b"], create_init=False)
+@attributes(["a", "b"], create_init=False)
 class MagicWithoutInitC(object):
     pass
 
 
-class TestWithAttributes(object):
+class TestAttributes(object):
     def test_leaves_init_alone(self):
         """
         If *create_init* is `False`, leave __init__ alone.
