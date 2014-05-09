@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 from unittest import TestCase
 
-from characteristic import eq_attrs, repr_attrs
+from characteristic import cmp_attrs, repr_attrs
 
 
-@eq_attrs(["a", "b"])
+@cmp_attrs(["a", "b"])
 class EqC(object):
     def __init__(self, a, b):
         self.a = a
@@ -75,7 +75,7 @@ class EqAttrsTestCase(TestCase):
 
     def test_ge(self):
         """
-        __ge__ compares objects as tupges of attribute values.
+        __ge__ compares objects as tuples of attribute values.
         """
         for a, b in [
             ((2, 1), (1, 2)),
@@ -85,6 +85,12 @@ class EqAttrsTestCase(TestCase):
             (("a", "b"), ("a", "b")),
         ]:
             self.assertTrue(EqC(*a) >= EqC(*b))
+
+    def test_hash(self):
+        """
+        __hash__ returns different hashes for different values.
+        """
+        assert hash(EqC(1, 2)) != hash(EqC(1, 1))
 
 
 @repr_attrs(["a", "b"])

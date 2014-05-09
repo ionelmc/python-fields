@@ -7,31 +7,35 @@ __license__ = "MIT"
 __copyright__ = "Copyright 2014 Hynek Schlawack"
 
 
-def eq_attrs(attrs):
+def cmp_attrs(attrs):
     """
-    Adds __eq__, and __ne__ methods based on *attrs* and same type.
+    A class decorator that adds comparison methods based on *attrs*.
 
-    __lt__, __le__, __gt__, and __ge__ compare the objects as if it were tuples
-    of attrs.
+    Two instances are compared as if the respective  values of *attrs* were
+    tuples.
 
-    :param attrs: Attributes that have to be equal to make two instances equal.
+    :param attrs: Attributes that are compared.
     :type attrs: `list` of native strings
     """
     def wrap(cl):
+        def attrs_to_tuple(obj):
+            """
+            Create a tuple of all values of *obj*'s *attrs*.
+            """
+            return tuple(getattr(obj, a) for a in attrs)
+
         def eq(self, other):
             if isinstance(other, self.__class__):
-                return all(
-                    getattr(self, a) == getattr(other, a)
-                    for a in attrs
-                )
+                return attrs_to_tuple(self) == attrs_to_tuple(other)
             else:
-                return False
+                return NotImplemented
 
         def ne(self, other):
-            return not eq(self, other)
-
-        def attrs_to_tuple(obj):
-            return tuple(getattr(obj, a) for a in attrs)
+            result = eq(self, other)
+            if result is NotImplemented:
+                return NotImplemented
+            else:
+                return not result
 
         def lt(self, other):
             return attrs_to_tuple(self) < attrs_to_tuple(other)
@@ -45,12 +49,16 @@ def eq_attrs(attrs):
         def ge(self, other):
             return attrs_to_tuple(self) >= attrs_to_tuple(other)
 
+        def hash_(self):
+            return hash(attrs_to_tuple(self))
+
         cl.__eq__ = eq
         cl.__ne__ = ne
         cl.__lt__ = lt
         cl.__le__ = le
         cl.__gt__ = gt
         cl.__ge__ = ge
+        cl.__hash__ = hash_
 
         return cl
     return wrap
@@ -58,8 +66,8 @@ def eq_attrs(attrs):
 
 def repr_attrs(attrs):
     """
-    Adds a __repr__ method that returns a sensible representation based on
-    *attrs*.
+    A class decorator that adds a __repr__ method that returns a sensible
+    representation based on *attrs*.
     """
     def wrap(cl):
         def repr_(self):
@@ -76,8 +84,8 @@ def repr_attrs(attrs):
 
 def magic_attrs(attrs):
     """
-    Combine :func:`eq_attrs` and :func:`repr_attrs` to avoid code duplication.
+    Combine :func:`cmp_attrs` and :func:`repr_attrs` to avoid code duplication.
     """
     def wrap(cl):
-        return eq_attrs(attrs)(repr_attrs(attrs)(cl))
+        return cmp_attrs(attrs)(repr_attrs(attrs)(cl))
     return wrap
