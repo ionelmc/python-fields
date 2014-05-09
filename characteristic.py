@@ -94,14 +94,29 @@ def with_repr(attrs):
     return wrap
 
 
-def with_init(attrs):
+def with_init(attrs, defaults=None):
     """
     A class decorator that wraps the __init__ method of a class and sets
     *attrs* first using keyword arguments.
+
+    :param attrs: attributes to be initialized
+    :type attrs: iterable of native strings
+    :param defaults: default values
+    :type defaults: `dict` or `None`
     """
+    if defaults is None:
+        defaults = {}
+
     def init(self, *args, **kw):
         for a in attrs:
-            setattr(self, a, kw.pop(a))
+            try:
+                v = kw.pop(a)
+            except KeyError:
+                try:
+                    v = defaults[a]
+                except KeyError:
+                    raise ValueError("Missing value for {0}.".format(a))
+            setattr(self, a, v)
         self.__original_init__(*args, **kw)
 
     def wrap(cl):
@@ -112,7 +127,7 @@ def with_init(attrs):
     return wrap
 
 
-def attributes(attrs, create_init=True):
+def attributes(attrs, defaults=None, create_init=True):
     """
     A class decorator that combines :func:`with_cmp` and :func:`with_repr` to
     avoid code duplication.
@@ -122,7 +137,7 @@ def attributes(attrs, create_init=True):
     def wrap(cl):
         cl = with_cmp(attrs)(with_repr(attrs)(cl))
         if create_init is True:
-            return with_init(attrs)(cl)
+            return with_init(attrs, defaults=defaults)(cl)
         else:
             return cl
     return wrap

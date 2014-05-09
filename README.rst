@@ -45,6 +45,13 @@ Let’s start with all bells and whistles: ``@attributes([attr1, attr2, …])`` 
    >>> obj3 = C(a=1, b="bca")
    >>> obj3 > obj1
    True
+   >>> @attributes(["a", "b", "c",], defaults={"c": 3})
+   ... class CWithDefaults(object):
+   ...     pass
+   >>> obj4 = CWithDefaults(a=1, b=2)
+   >>> obj5 = CWithDefaults(a=1, b=2, c=3)
+   >>> obj4 == obj5
+   True
 
 
 The difference to namedtuple_\ s is that classes decorated by ``characteristic`` are type-sensitive and just general classes you can use for whatever you want::

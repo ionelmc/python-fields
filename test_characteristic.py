@@ -187,6 +187,23 @@ class TestWithInit(object):
         assert 42 == obj.kw_arg
         assert 1 == obj.a
 
+    def test_defaults(self):
+        """
+        If defaults are passed, they are used as fallback.
+        """
+        @with_init(["a", "b"], defaults={"b": 2})
+        class InitWithDefaults(object):
+            pass
+        obj = InitWithDefaults(a=1)
+        assert 2 == obj.b
+
+    def test_missing_arg(self):
+        """
+        Raises `ValueError` if a value isn't passed.
+        """
+        with pytest.raises(ValueError):
+            InitC(a=1)
+
 
 @attributes(["a", "b"], create_init=True)
 class MagicWithInitC(object):
