@@ -117,7 +117,9 @@ class ReprAttrsTestCase(TestCase):
 
 @with_init(["a", "b"])
 class InitC(object):
-    pass
+    def __init__(self):
+        if self.a == self.b:
+            raise ValueError
 
 
 class TestWithInit(object):
@@ -128,6 +130,13 @@ class TestWithInit(object):
         obj = InitC(a=1, b=2)
         assert 1 == obj.a
         assert 2 == obj.b
+
+    def test_custom_init(self):
+        """
+        The class initializator is called too.
+        """
+        with pytest.raises(ValueError):
+            InitC(a=1, b=1)
 
 
 @with_attributes(["a", "b"], create_init=True)
