@@ -66,7 +66,7 @@ The difference to namedtuple_\ s is that classes decorated by ``characteristic``
    1
 
 
-While namedtuple’s purpose is explicitly to behave like tuples::
+…while namedtuple’s purpose is explicitly to behave like tuples::
 
 
    >>> from collections import namedtuple
