@@ -17,41 +17,41 @@ def with_cmp(attrs):
     :param attrs: Attributes that are compared.
     :type attrs: `list` of native strings
     """
+    def attrs_to_tuple(obj):
+        """
+        Create a tuple of all values of *obj*'s *attrs*.
+        """
+        return tuple(getattr(obj, a) for a in attrs)
+
+    def eq(self, other):
+        if isinstance(other, self.__class__):
+            return attrs_to_tuple(self) == attrs_to_tuple(other)
+        else:
+            return NotImplemented
+
+    def ne(self, other):
+        result = eq(self, other)
+        if result is NotImplemented:
+            return NotImplemented
+        else:
+            return not result
+
+    def lt(self, other):
+        return attrs_to_tuple(self) < attrs_to_tuple(other)
+
+    def le(self, other):
+        return attrs_to_tuple(self) <= attrs_to_tuple(other)
+
+    def gt(self, other):
+        return attrs_to_tuple(self) > attrs_to_tuple(other)
+
+    def ge(self, other):
+        return attrs_to_tuple(self) >= attrs_to_tuple(other)
+
+    def hash_(self):
+        return hash(attrs_to_tuple(self))
+
     def wrap(cl):
-        def attrs_to_tuple(obj):
-            """
-            Create a tuple of all values of *obj*'s *attrs*.
-            """
-            return tuple(getattr(obj, a) for a in attrs)
-
-        def eq(self, other):
-            if isinstance(other, self.__class__):
-                return attrs_to_tuple(self) == attrs_to_tuple(other)
-            else:
-                return NotImplemented
-
-        def ne(self, other):
-            result = eq(self, other)
-            if result is NotImplemented:
-                return NotImplemented
-            else:
-                return not result
-
-        def lt(self, other):
-            return attrs_to_tuple(self) < attrs_to_tuple(other)
-
-        def le(self, other):
-            return attrs_to_tuple(self) <= attrs_to_tuple(other)
-
-        def gt(self, other):
-            return attrs_to_tuple(self) > attrs_to_tuple(other)
-
-        def ge(self, other):
-            return attrs_to_tuple(self) >= attrs_to_tuple(other)
-
-        def hash_(self):
-            return hash(attrs_to_tuple(self))
-
         cl.__eq__ = eq
         cl.__ne__ = ne
         cl.__lt__ = lt
@@ -69,13 +69,13 @@ def with_repr(attrs):
     A class decorator that adds a __repr__ method that returns a sensible
     representation based on *attrs*.
     """
-    def wrap(cl):
-        def repr_(self):
-            return "<{0}({1})>".format(
-                self.__class__.__name__,
-                ", ".join(a + "=" + repr(getattr(self, a)) for a in attrs)
-            )
+    def repr_(self):
+        return "<{0}({1})>".format(
+            self.__class__.__name__,
+            ", ".join(a + "=" + repr(getattr(self, a)) for a in attrs)
+        )
 
+    def wrap(cl):
         cl.__repr__ = repr_
         return cl
 
@@ -87,11 +87,12 @@ def with_init(attrs):
     A class decorator that wraps the __init__ method of a class and sets
     *attrs* first using keyword arguments.
     """
+    def init(self, *args, **kw):
+        for a in attrs:
+            setattr(self, a, kw.pop(a))
+        self.__original_init__(*args, **kw)
+
     def wrap(cl):
-        def init(self, *args, **kw):
-            for a in attrs:
-                setattr(self, a, kw.pop(a))
-            self.__original_init__(*args, **kw)
         cl.__original_init__ = cl.__init__
         cl.__init__ = init
         return cl
