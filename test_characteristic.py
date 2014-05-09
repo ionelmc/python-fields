@@ -11,7 +11,7 @@ from characteristic import (
 
 
 @with_cmp(["a", "b"])
-class EqC(object):
+class CmpC(object):
     def __init__(self, a, b):
         self.a = a
         self.b = b
@@ -22,26 +22,26 @@ class TestWithCmp(object):
         """
         Equal objects are detected as equal.
         """
-        assert EqC(1, 2) == EqC(1, 2)
-        assert not (EqC(1, 2) != EqC(1, 2))
+        assert CmpC(1, 2) == CmpC(1, 2)
+        assert not (CmpC(1, 2) != CmpC(1, 2))
 
     def test_unequal_same_class(self):
         """
         Unequal objects of correct type are detected as unequal.
         """
-        assert EqC(1, 2) != EqC(2, 1)
-        assert not (EqC(1, 2) == EqC(2, 1))
+        assert CmpC(1, 2) != CmpC(2, 1)
+        assert not (CmpC(1, 2) == CmpC(2, 1))
 
     def test_unequal_different_class(self):
         """
         Unequal objects of differnt type are detected even if their attributes
         match.
         """
-        class NotEqC(object):
+        class NotCmpC(object):
             a = 1
             b = 2
-        assert EqC(1, 2) != NotEqC()
-        assert not (EqC(1, 2) == NotEqC())
+        assert CmpC(1, 2) != NotCmpC()
+        assert not (CmpC(1, 2) == NotCmpC())
 
     def test_lt(self):
         """
@@ -52,7 +52,7 @@ class TestWithCmp(object):
             ((1, 2),  (1, 3)),
             (("a", "b"), ("b", "a")),
         ]:
-            assert EqC(*a) < EqC(*b)
+            assert CmpC(*a) < CmpC(*b)
 
     def test_le(self):
         """
@@ -65,7 +65,7 @@ class TestWithCmp(object):
             (("a", "b"), ("b", "a")),
             (("a", "b"), ("a", "b")),
         ]:
-            assert EqC(*a) <= EqC(*b)
+            assert CmpC(*a) <= CmpC(*b)
 
     def test_gt(self):
         """
@@ -76,7 +76,7 @@ class TestWithCmp(object):
             ((1, 3), (1, 2)),
             (("b", "a"), ("a", "b")),
         ]:
-            assert EqC(*a) > EqC(*b)
+            assert CmpC(*a) > CmpC(*b)
 
     def test_ge(self):
         """
@@ -89,13 +89,13 @@ class TestWithCmp(object):
             (("b", "a"), ("a", "b")),
             (("a", "b"), ("a", "b")),
         ]:
-            assert EqC(*a) >= EqC(*b)
+            assert CmpC(*a) >= CmpC(*b)
 
     def test_hash(self):
         """
         __hash__ returns different hashes for different values.
         """
-        assert hash(EqC(1, 2)) != hash(EqC(1, 1))
+        assert hash(CmpC(1, 2)) != hash(CmpC(1, 1))
 
 
 @with_repr(["a", "b"])
