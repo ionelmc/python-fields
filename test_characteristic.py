@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-from unittest import TestCase
-
 import pytest
 
 from characteristic import (
@@ -19,20 +17,20 @@ class EqC(object):
         self.b = b
 
 
-class EqAttrsTestCase(TestCase):
+class TestWithCmp(object):
     def test_equal(self):
         """
         Equal objects are detected as equal.
         """
-        self.assertTrue(EqC(1, 2) == EqC(1, 2))
-        self.assertFalse(EqC(1, 2) != EqC(1, 2))
+        assert EqC(1, 2) == EqC(1, 2)
+        assert not (EqC(1, 2) != EqC(1, 2))
 
     def test_unequal_same_class(self):
         """
         Unequal objects of correct type are detected as unequal.
         """
-        self.assertTrue(EqC(1, 2) != EqC(2, 1))
-        self.assertFalse(EqC(1, 2) == EqC(2, 1))
+        assert EqC(1, 2) != EqC(2, 1)
+        assert not (EqC(1, 2) == EqC(2, 1))
 
     def test_unequal_different_class(self):
         """
@@ -42,8 +40,8 @@ class EqAttrsTestCase(TestCase):
         class NotEqC(object):
             a = 1
             b = 2
-        self.assertTrue(EqC(1, 2) != NotEqC())
-        self.assertFalse(EqC(1, 2) == NotEqC())
+        assert EqC(1, 2) != NotEqC()
+        assert not (EqC(1, 2) == NotEqC())
 
     def test_lt(self):
         """
@@ -54,7 +52,7 @@ class EqAttrsTestCase(TestCase):
             ((1, 2),  (1, 3)),
             (("a", "b"), ("b", "a")),
         ]:
-            self.assertTrue(EqC(*a) < EqC(*b))
+            assert EqC(*a) < EqC(*b)
 
     def test_le(self):
         """
@@ -67,7 +65,7 @@ class EqAttrsTestCase(TestCase):
             (("a", "b"), ("b", "a")),
             (("a", "b"), ("a", "b")),
         ]:
-            self.assertTrue(EqC(*a) <= EqC(*b))
+            assert EqC(*a) <= EqC(*b)
 
     def test_gt(self):
         """
@@ -78,7 +76,7 @@ class EqAttrsTestCase(TestCase):
             ((1, 3), (1, 2)),
             (("b", "a"), ("a", "b")),
         ]:
-            self.assertTrue(EqC(*a) > EqC(*b))
+            assert EqC(*a) > EqC(*b)
 
     def test_ge(self):
         """
@@ -91,7 +89,7 @@ class EqAttrsTestCase(TestCase):
             (("b", "a"), ("a", "b")),
             (("a", "b"), ("a", "b")),
         ]:
-            self.assertTrue(EqC(*a) >= EqC(*b))
+            assert EqC(*a) >= EqC(*b)
 
     def test_hash(self):
         """
@@ -107,12 +105,12 @@ class ReprC(object):
         self.b = b
 
 
-class ReprAttrsTestCase(TestCase):
+class TestReprAttrs(object):
     def test_repr(self):
         """
         Test repr returns a sensible value.
         """
-        self.assertEqual("<ReprC(a=1, b=2)>", repr(ReprC(1, 2)))
+        assert "<ReprC(a=1, b=2)>" == repr(ReprC(1, 2))
 
 
 @with_init(["a", "b"])
