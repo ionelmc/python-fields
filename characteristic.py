@@ -7,7 +7,7 @@ __license__ = "MIT"
 __copyright__ = "Copyright 2014 Hynek Schlawack"
 
 
-def cmp_attrs(attrs):
+def with_cmp(attrs):
     """
     A class decorator that adds comparison methods based on *attrs*.
 
@@ -64,7 +64,7 @@ def cmp_attrs(attrs):
     return wrap
 
 
-def repr_attrs(attrs):
+def with_repr(attrs):
     """
     A class decorator that adds a __repr__ method that returns a sensible
     representation based on *attrs*.
@@ -82,10 +82,34 @@ def repr_attrs(attrs):
     return wrap
 
 
-def magic_attrs(attrs):
+def with_init(attrs):
     """
-    Combine :func:`cmp_attrs` and :func:`repr_attrs` to avoid code duplication.
+    A class decorator that wraps the __init__ method of a class and sets
+    *attrs* first using keyword arguments.
     """
     def wrap(cl):
-        return cmp_attrs(attrs)(repr_attrs(attrs)(cl))
+        def init(self, *args, **kw):
+            for a in attrs:
+                setattr(self, a, kw.pop(a))
+            self.__original_init__(*args, **kw)
+        cl.__original_init__ = cl.__init__
+        cl.__init__ = init
+        return cl
+
+    return wrap
+
+
+def with_attributes(attrs, create_init=False):
+    """
+    A class decorator that combines :func:`with_cmp` and :func:`with_repr` to
+    avoid code duplication.
+
+    Optionally also apply :func:`with_init`.
+    """
+    def wrap(cl):
+        cl = with_cmp(attrs)(with_repr(attrs)(cl))
+        if create_init is True:
+            return with_init(attrs)(cl)
+        else:
+            return cl
     return wrap

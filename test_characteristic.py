@@ -2,10 +2,17 @@ from __future__ import absolute_import, division, print_function
 
 from unittest import TestCase
 
-from characteristic import cmp_attrs, repr_attrs
+import pytest
+
+from characteristic import (
+    with_attributes,
+    with_cmp,
+    with_init,
+    with_repr,
+)
 
 
-@cmp_attrs(["a", "b"])
+@with_cmp(["a", "b"])
 class EqC(object):
     def __init__(self, a, b):
         self.a = a
@@ -93,7 +100,7 @@ class EqAttrsTestCase(TestCase):
         assert hash(EqC(1, 2)) != hash(EqC(1, 1))
 
 
-@repr_attrs(["a", "b"])
+@with_repr(["a", "b"])
 class ReprC(object):
     def __init__(self, a, b):
         self.a = a
@@ -106,3 +113,48 @@ class ReprAttrsTestCase(TestCase):
         Test repr returns a sensible value.
         """
         self.assertEqual("<ReprC(a=1, b=2)>", repr(ReprC(1, 2)))
+
+
+@with_init(["a", "b"])
+class InitC(object):
+    pass
+
+
+class TestWithInit(object):
+    def test_sets_attributes(self):
+        """
+        The attributes are initialized using the passed keywords.
+        """
+        obj = InitC(a=1, b=2)
+        assert 1 == obj.a
+        assert 2 == obj.b
+
+
+@with_attributes(["a", "b"], create_init=True)
+class MagicWithInitC(object):
+    pass
+
+
+@with_attributes(["a", "b"], create_init=False)
+class MagicWithoutInitC(object):
+    pass
+
+
+class TestWithAttributes(object):
+    def test_leaves_init_alone(self):
+        """
+        If *create_init* is `False`, leave __init__ alone.
+        """
+        obj = MagicWithoutInitC()
+        with pytest.raises(AttributeError):
+            obj.a
+        with pytest.raises(AttributeError):
+            obj.b
+
+    def test_wraps_init(self):
+        """
+        If *create_init* is `True`, build initializer.
+        """
+        obj = MagicWithInitC(a=1, b=2)
+        assert 1 == obj.a
+        assert 2 == obj.b
