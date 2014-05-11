@@ -5,7 +5,7 @@ Say 'yes' to types but 'no' to typing!
 """
 
 
-__version__ = "0.1.0"
+__version__ = "0.2.0dev"
 __author__ = "Hynek Schlawack"
 __license__ = "MIT"
 __copyright__ = "Copyright 2014 Hynek Schlawack"
