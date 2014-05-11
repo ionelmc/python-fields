@@ -1,4 +1,4 @@
-characteristic: Say 'yes' to types but 'no' to typing!
+characteristic: Say ‘yes’ to types but ‘no’ to typing!
 ======================================================
 
 .. image:: https://travis-ci.org/hynek/characteristic.svg
