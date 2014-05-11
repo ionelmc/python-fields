@@ -34,7 +34,7 @@ setup(
     description="Say 'yes' to types but 'no' to typing!",
     long_description=(read("README.rst") + "\n\n" +
                       read("AUTHORS.rst")),
-    url="https://github.com/hynek/characteristic/",
+    url="https://characteristic.readthedocs.org/",
     license="MIT",
     author="Hynek Schlawack",
     author_email="hs@ox.cx",
