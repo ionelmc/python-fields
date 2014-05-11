@@ -4,16 +4,14 @@ Examples
 ========
 
 
-Full Features
--------------
-
-Let’s start with all bells and whistles: ``@attributes([attr1, attr2, …])`` enhances your class by:
+``@attributes([attr1, attr2, …])`` enhances your class by:
 
 - a nice ``__repr__``,
 - comparison methods that compare instances as if they were tuples of their attributes,
-- and – optionally but by default – an initializer that uses the keyword arguments to initialize the specified attributes before running the class’ own initializer.
+- and – optionally but by default – an initializer that uses the keyword arguments to initialize the specified attributes before running the class’ own initializer (you just write the validator!).
 
-::
+
+.. doctest::
 
    >>> from characteristic import attributes
    >>> @attributes(["a", "b",])
@@ -37,11 +35,3 @@ Let’s start with all bells and whistles: ``@attributes([attr1, attr2, …])`` 
    >>> obj5 = CWithDefaults(a=1, b=2, c=3)
    >>> obj4 == obj5
    True
-
-
-
-
-Cherry Picking
---------------
-
-Of course, you can also use only *some* of the features by using ``with_cmp``, ``with_repr``, or ``with_init`` separately (or in any combination).
