@@ -15,10 +15,10 @@ def with_cmp(attrs):
     """
     A class decorator that adds comparison methods based on *attrs*.
 
-    Two instances are compared as if the respective  values of *attrs* were
+    Two instances are compared as if the respective values of *attrs* were
     tuples.
 
-    :param attrs: Attributes that are compared.
+    :param attrs: Attributes to work with.
     :type attrs: `list` of native strings
     """
     def attrs_to_tuple(obj):
@@ -82,8 +82,11 @@ def with_cmp(attrs):
 
 def with_repr(attrs):
     """
-    A class decorator that adds a __repr__ method that returns a sensible
-    representation based on *attrs*.
+    A class decorator that adds a human-friendly ``__repr__`` method that
+    returns a sensible representation based on *attrs*.
+
+    :param attrs: Attributes to work with.
+    :type attrs: Iterable of native strings.
     """
     def repr_(self):
         return "<{0}({1})>".format(
@@ -103,9 +106,10 @@ def with_init(attrs, defaults=None):
     A class decorator that wraps the __init__ method of a class and sets
     *attrs* first using keyword arguments.
 
-    :param attrs: attributes to be initialized
-    :type attrs: iterable of native strings
-    :param defaults: default values
+    :param attrs: Attributes to work with.
+    :type attrs: Iterable of native strings.
+
+    :param defaults: Default values if attributes are omitted on instantiation.
     :type defaults: `dict` or `None`
     """
     if defaults is None:
@@ -133,10 +137,17 @@ def with_init(attrs, defaults=None):
 
 def attributes(attrs, defaults=None, create_init=True):
     """
-    A class decorator that combines :func:`with_cmp` and :func:`with_repr` to
-    avoid code duplication.
+    A convenience class decorator that combines :func:`with_cmp`,
+    :func:`with_repr`, and optionally :func:`with_init` to avoid code
+    duplication.
 
-    Optionally also apply :func:`with_init`.
+    :param attrs: Attributes to work with.
+    :type attrs: Iterable of native strings.
+
+    :param defaults: see :func:`with_init`
+
+    :param create_init: Also apply :func:`with_init` (default: `True`)
+    :type create_init: `bool`
     """
     def wrap(cl):
         cl = with_cmp(attrs)(with_repr(attrs)(cl))

@@ -1,0 +1,4 @@
+-e .
+pytest
+pytest-cov
+tox

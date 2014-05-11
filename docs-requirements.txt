@@ -1,0 +1,4 @@
+-r dev-requirements.txt
+releases
+sphinx
+sphinx_rtd_theme
