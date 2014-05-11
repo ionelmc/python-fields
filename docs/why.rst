@@ -11,6 +11,9 @@ The difference between namedtuple_\ s and classes decorated by ``characteristic`
    >>> from characteristic import attributes
    >>> @attributes(["a",])
    ... class C1(object):
+   ...     def __init__(self):
+   ...         if not isinstance(self.a, int):
+   ...             raise ValueError("'a' must be an integer.")
    ...     def print_a(self):
    ...         print self.a
    >>> @attributes(["a",])
@@ -22,6 +25,10 @@ The difference between namedtuple_\ s and classes decorated by ``characteristic`
    False
    >>> c1.print_a()
    1
+   >>> C1(a="hello")
+   Traceback (most recent call last):
+      ...
+   ValueError: 'a' must be an integer.
 
 
 …while namedtuple’s purpose is *explicitly* to behave like tuples:
