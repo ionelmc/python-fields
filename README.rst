@@ -81,7 +81,7 @@ The difference to namedtuple_\ s is that classes decorated by ``characteristic``
    >>> NT2 = namedtuple("NT2", "b")
    >>> t1 = NT1._make([1,])
    >>> t2 = NT2._make([1,])
-   >>> t1 == t2
+   >>> t1 == t2 == (1,)
    True
 
 
