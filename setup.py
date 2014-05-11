@@ -31,7 +31,7 @@ def find_version(*file_paths):
 setup(
     name="characteristic",
     version=find_version("characteristic.py"),
-    description="Handle Python object attributes with ease!",
+    description="Say 'yes' to types but 'no' to typing!",
     long_description=(read("README.rst") + "\n\n" +
                       read("HISTORY.rst") + "\n\n" +
                       read("AUTHORS.rst")),

@@ -1,5 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
+"""
+Say 'yes' to types but 'no' to typing!
+"""
+
 
 __version__ = "0.1.0dev"
 __author__ = "Hynek Schlawack"
