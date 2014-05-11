@@ -1,9 +1,11 @@
 characteristic: Say 'yes' to types but 'no' to typing!
 ======================================================
 
+Release v\ |release| (:doc:`What's new? <changelog>`).
+
+
 .. include:: ../README.rst
    :start-after: begin
-
 
 
 Teaser
