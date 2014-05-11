@@ -16,7 +16,7 @@ You just specify the attributes to work with and ``characteristic`` gives you:
 
 - a nice human-readable ``__repr__``,
 - a complete set of comparison methods,
-- and an kwargs-based initializer (that cooperates with your existing one)
+- and a kwargs-based initializer (that cooperates with your existing one)
 
 *without* writing dull boilerplate code again and again.
 
