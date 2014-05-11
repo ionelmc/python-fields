@@ -39,42 +39,9 @@ Let’s start with all bells and whistles: ``@attributes([attr1, attr2, …])`` 
    True
 
 
-The difference to namedtuple_\ s is that classes decorated by ``characteristic`` are type-sensitive and just general classes you can use for whatever you want::
-
-
-   >>> from __future__ import print_function
-   >>> @attributes(["a",])
-   ... class C1(object):
-   ...     def print_a(self):
-   ...         print(self.a)
-   >>> @attributes(["a",])
-   ... class C2(object):
-   ...     pass
-   >>> c1 = C1(a=1)
-   >>> c2 = C2(a=1)
-   >>> c1 == c2
-   False
-   >>> c1.print_a()
-   1
-
-
-…while namedtuple’s purpose is explicitly to behave like tuples::
-
-
-   >>> from collections import namedtuple
-   >>> NT1 = namedtuple("NT1", "a")
-   >>> NT2 = namedtuple("NT2", "b")
-   >>> t1 = NT1._make([1,])
-   >>> t2 = NT2._make([1,])
-   >>> t1 == t2 == (1,)
-   True
 
 
 Cherry Picking
 --------------
 
 Of course, you can also use only *some* of the features by using ``with_cmp``, ``with_repr``, or ``with_init`` separately (or in any combination).
-
-
-.. _namedtuple: https://docs.python.org/2/library/collections.html#collections.namedtuple
-.. _tuple: https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences

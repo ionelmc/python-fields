@@ -123,7 +123,7 @@ def with_init(attrs, defaults=None):
                 try:
                     v = defaults[a]
                 except KeyError:
-                    raise ValueError("Missing value for {0}.".format(a))
+                    raise ValueError("Missing value for '{0}'.".format(a))
             setattr(self, a, v)
         self.__original_init__(*args, **kw)
 
@@ -144,7 +144,8 @@ def attributes(attrs, defaults=None, create_init=True):
     :param attrs: Attributes to work with.
     :type attrs: Iterable of native strings.
 
-    :param defaults: see :func:`with_init`
+    :param defaults: Default values if attributes are omitted on instantiation.
+    :type defaults: `dict` or `None`
 
     :param create_init: Also apply :func:`with_init` (default: `True`)
     :type create_init: `bool`
