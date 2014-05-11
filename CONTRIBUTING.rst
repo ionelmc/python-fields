@@ -34,7 +34,7 @@ If you have any question or concerns, feel free to reach out to me.
 .. _`PEP 8`: http://www.python.org/dev/peps/pep-0008/
 .. _`PEP 257`: http://www.python.org/dev/peps/pep-0257/
 .. _`good commit messages`: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-.. _`Code of Conduct`: http://www.python.org/psf/codeofconduct/
-.. _changelog: https://github.com/hynek/characteristic/blob/master/HISTORY.rst
+.. _`Code of Conduct`: https://www.python.org/psf/codeofconduct/
+.. _changelog: https://github.com/hynek/characteristic/blob/master/docs/changelog.rst
 .. _AUTHORS.rst: https://github.com/hynek/characteristic/blob/master/AUTHORS.rst
 .. _procedures: http://twistedmatrix.com/trac/wiki/CompatibilityPolicy
