@@ -41,8 +41,8 @@ User's Guide
    api
    examples
 
-Project Infortmation
-^^^^^^^^^^^^^^^^^^^^
+Project Information
+^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
