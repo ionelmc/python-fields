@@ -3,7 +3,7 @@
 API
 ===
 
-``characteristic`` consists of class decorators that add features to your classes..
+``characteristic`` consists of class decorators that add features to your classes.
 There are three that start with ``@with_`` that add *one* feature to your class based on a list of attributes.
 Then there's the helper ``@attributes`` that combines them all into one decorator so you don't have to repeat the attribute list multiple times.
 
