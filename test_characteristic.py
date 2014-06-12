@@ -155,14 +155,14 @@ class TestWithInit(object):
 
     def test_custom_init(self):
         """
-        The class initializator is called too.
+        The class initializer is called too.
         """
         with pytest.raises(ValueError):
             InitC(a=1, b=1)
 
     def test_passes_args(self):
         """
-        All positional parameters are passed to the original initializator.
+        All positional parameters are passed to the original initializer.
         """
         @with_init(["a"])
         class InitWithArg(object):
@@ -176,7 +176,7 @@ class TestWithInit(object):
     def test_passes_remaining_kw(self):
         """
         Keyword arguments that aren't used for attributes are passed to the
-        original initializator.
+        original initializer.
         """
         @with_init(["a"])
         class InitWithKWArg(object):
@@ -190,7 +190,7 @@ class TestWithInit(object):
     def test_does_not_pass_attrs(self):
         """
         The attributes are removed from the keyword arguments before they are
-        passed to the original initializator.
+        passed to the original initializer.
         """
         @with_init(["a"])
         class InitWithKWArgs(object):
