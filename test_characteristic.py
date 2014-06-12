@@ -187,6 +187,18 @@ class TestWithInit(object):
         assert 42 == obj.kw_arg
         assert 1 == obj.a
 
+    def test_does_not_pass_attrs(self):
+        """
+        The attributes are removed from the keyword arguments before they are
+        passed to the original initializator.
+        """
+        @with_init(["a"])
+        class InitWithKWArgs(object):
+            def __init__(self, **kw):
+                assert "a" not in kw
+                assert "b" in kw
+        InitWithKWArgs(a=1, b=42)
+
     def test_defaults(self):
         """
         If defaults are passed, they are used as fallback.
