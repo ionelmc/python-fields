@@ -1,26 +1,48 @@
-characteristic: Say ‘yes’ to types but ‘no’ to typing!
-======================================================
+===============================
+python-fields
+===============================
 
-.. image:: https://travis-ci.org/hynek/characteristic.svg
-   :target: https://travis-ci.org/hynek/characteristic
+.. image:: http://img.shields.io/travis/ionelmc/python-fields/master.png
+    :alt: Travis-CI Build Status
+    :target: https://travis-ci.org/ionelmc/python-fields
 
-.. image:: https://coveralls.io/repos/hynek/characteristic/badge.png?branch=master
-    :target: https://coveralls.io/r/hynek/characteristic?branch=master
+.. See: http://www.appveyor.com/docs/status-badges
 
-.. begin
+.. image:: https://ci.appveyor.com/api/projects/status/<security-token>/branch/master
+    :alt: AppVeyor Build Status
+    :target: https://ci.appveyor.com/project/ionelmc/python-fields
 
+.. image:: http://img.shields.io/coveralls/ionelmc/python-fields/master.png
+    :alt: Coverage Status
+    :target: https://coveralls.io/r/ionelmc/python-fields
 
-``characteristic`` is an `MIT <http://choosealicense.com/licenses/mit/>`_-licensed Python package with class decorators that ease the chores of implementing the most common attribute-related object protocols.
+.. image:: http://img.shields.io/pypi/v/fields.png
+    :alt: PYPI Package
+    :target: https://pypi.python.org/pypi/fields
 
-You just specify the attributes to work with and ``characteristic`` gives you:
+.. image:: http://img.shields.io/pypi/dm/fields.png
+    :alt: PYPI Package
+    :target: https://pypi.python.org/pypi/fields
 
-- a nice human-readable ``__repr__``,
-- a complete set of comparison methods,
-- and a kwargs-based initializer (that cooperates with your existing one)
+An example package. Replace this with a proper project description. Generated with https://github.com/ionelmc/cookiecutter-pylibrary
 
-*without* writing dull boilerplate code again and again.
+* Free software: BSD license
 
-So put down that type-less data structures and welcome some class into your life!
+Installation
+============
 
-``characteristic``\ ’s documentation lives at `Read the Docs <https://characteristic.readthedocs.org/>`_, the code on `GitHub <https://github.com/hynek/characteristic>`_.
-It’s rigorously tested on Python 2.6, 2.7, 3.3+, and PyPy.
+::
+
+    pip install fields
+
+Documentation
+=============
+
+https://python-fields.readthedocs.org/
+
+Development
+===========
+
+To run the all tests run::
+
+    tox

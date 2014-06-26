@@ -1,40 +1,89 @@
-How To Contribute
-=================
+============
+Contributing
+============
 
-Every open source project lives from the generous help by contributors that sacrifice their time and ``characteristic`` is no different.
+Contributions are welcome, and they are greatly appreciated! Every
+little bit helps, and credit will always be given.
 
-To make participation as pleasant as possible, this project adheres to the `Code of Conduct`_ by the Python Software Foundation.
+Bug reports
+===========
 
-Here are a few guidelines to get you started:
+When `reporting a bug <https://github.com/ionelmc/python-fields/issues>`_ please include:
 
-- Add yourself to the AUTHORS.rst_ file in an alphabetical fashion.
-  Every contribution is valuable and shall be credited.
-- If your change is noteworthy, add an entry to the changelog_.
-- No contribution is too small; please submit as many fixes for typos and grammar bloopers as you can!
-- Don’t *ever* break backward compatibility.
-  If it ever *has* to happen for higher reasons, ``characteristic`` will follow the proven procedures_ of the Twisted project.
-- *Always* add tests and docs for your code.
-  This is a hard rule; patches with missing tests or documentation won’t be merged.
-  If a feature is not tested or documented, it doesn’t exist.
-- Obey `PEP 8`_ and `PEP 257`_.
-- Write `good commit messages`_.
-- Ideally, squash_ your commits, i.e. make your pull requests just one commit.
+    * Your operating system name and version.
+    * Any details about your local setup that might be helpful in troubleshooting.
+    * Detailed steps to reproduce the bug.
 
-.. note::
-   If you have something great but aren’t sure whether it adheres -- or even can adhere -- to the rules above: **please submit a pull request anyway**!
+Documentation improvements
+==========================
 
-   In the best case, we can mold it into something, in the worst case the pull request gets politely closed.
-   There’s absolutely nothing to fear.
+python-fields could always use more documentation, whether as part of the
+official python-fields docs, in docstrings, or even on the web in blog posts,
+articles, and such.
 
-Thank you for considering to contribute to ``characteristic``!
-If you have any question or concerns, feel free to reach out to me.
+Feature requests and feedback
+=============================
 
+The best way to send feedback is to file an issue at https://github.com/ionelmc/python-fields/issues.
 
-.. _squash: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
-.. _`PEP 8`: http://www.python.org/dev/peps/pep-0008/
-.. _`PEP 257`: http://www.python.org/dev/peps/pep-0257/
-.. _`good commit messages`: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-.. _`Code of Conduct`: https://www.python.org/psf/codeofconduct/
-.. _changelog: https://github.com/hynek/characteristic/blob/master/docs/changelog.rst
-.. _AUTHORS.rst: https://github.com/hynek/characteristic/blob/master/AUTHORS.rst
-.. _procedures: http://twistedmatrix.com/trac/wiki/CompatibilityPolicy
+If you are proposing a feature:
+
+* Explain in detail how it would work.
+* Keep the scope as narrow as possible, to make it easier to implement.
+* Remember that this is a volunteer-driven project, and that contributions are welcome :)
+
+Development
+===========
+
+To set up `python-fields` for local development:
+
+1. `Fork python-fields on GitHub <https://github.com/ionelmc/python-fields/fork>`_.
+2. Clone your fork locally::
+
+    git clone git@github.com:your_name_here/python-fields.git
+
+3. Create a branch for local development::
+
+    git checkout -b name-of-your-bugfix-or-feature
+
+   Now you can make your changes locally.
+
+4. When you're done making changes, run all the checks, doc builder and spell checker with `tox <http://tox.readthedocs.org/en/latest/install.html>`_ one command::
+
+    tox
+
+5. Commit your changes and push your branch to GitHub::
+
+    git add .
+    git commit -m "Your detailed description of your changes."
+    git push origin name-of-your-bugfix-or-feature
+
+6. Submit a pull request through the GitHub website.
+
+Pull Request Guidelines
+-----------------------
+
+If you need some code review or feedback while you're developing the code just make the pull request.
+
+For merging, you should:
+
+1. Include passing tests (run ``tox``) [1]_.
+2. Update documentation when there's new API, functionality etc. 
+3. Add a note to ``CHANGELOG.rst`` about the changes.
+4. Add yourself to ``AUTHORS.rst``.
+
+.. [1] If you don't have all the necessary python versions available locally you can rely on Travis - it will 
+       `run the tests <https://travis-ci.org/ionelmc/python-fields/pull_requests>`_ for each change you add in the pull request.
+       
+       It will be slower though ...
+       
+Tips
+----
+
+To run a subset of tests::
+
+    tox -e envname -- py.test -k test_myfeature
+
+To run all the test environments in *parallel* (you need to ``pip install detox``)::
+
+    detox
