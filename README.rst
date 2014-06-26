@@ -35,6 +35,26 @@ Installation
 
     pip install fields
 
+Usage
+=====
+
+::
+
+    from fields import Fields
+
+    class Pair(Fields.a.b):
+        pass
+
+    p = Pair(1, 2)
+    p.a
+    p.b
+
+    class Node(Fields.value.left(None).right(None)):
+        pass
+
+    p = Node(1, Node(2), Node(3, Node(4)))
+
+
 Documentation
 =============
 
