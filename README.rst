@@ -22,9 +22,16 @@ python-fields
     :alt: PYPI Package
     :target: https://pypi.python.org/pypi/fields
 
-An example package. Replace this with a proper project description. Generated with https://github.com/ionelmc/cookiecutter-pylibrary
+Container class boilerplate killer.
 
-* Free software: BSD license
+Features:
+
+* Human-readable ``__repr__``
+* Complete set of comparison methods
+* Keyword and positional argument support. Works like a normal class - you can override just about anything in the
+  subclass (eg: a custom ``__init__``). In contrast, `hynek/characteristic <https://github.com/hynek/characteristic>`
+  forces different call schematics and calls your ``__init__`` with different arguments.
+
 
 Installation
 ============
