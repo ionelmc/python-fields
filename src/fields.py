@@ -32,6 +32,46 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
                 else:
                     setattr(self, name, value)
 
+        def __eq__(self, other):
+            if isinstance(other, self.__class__):
+                return tuple(getattr(self, a) for a in all_fields) == tuple(getattr(other, a) for a in all_fields)
+            else:
+                return NotImplemented
+
+        def __ne__(self, other):
+            result = self == other
+            if result is NotImplemented:
+                return NotImplemented
+            else:
+                return not result
+
+        def __lt__(self, other):
+            if isinstance(other, self.__class__):
+                return tuple(getattr(self, a) for a in all_fields) < tuple(getattr(other, a) for a in all_fields)
+            else:
+                return NotImplemented
+
+        def __le__(self, other):
+            if isinstance(other, self.__class__):
+                return tuple(getattr(self, a) for a in all_fields) <= tuple(getattr(other, a) for a in all_fields)
+            else:
+                return NotImplemented
+
+        def __gt__(self, other):
+            if isinstance(other, self.__class__):
+                return tuple(getattr(self, a) for a in all_fields) > tuple(getattr(other, a) for a in all_fields)
+            else:
+                return NotImplemented
+
+        def __ge__(self, other):
+            if isinstance(other, self.__class__):
+                return tuple(getattr(self, a) for a in all_fields) >= tuple(getattr(other, a) for a in all_fields)
+            else:
+                return NotImplemented
+
+        def __hash__(self):
+            return hash(tuple(getattr(self, a) for a in all_fields))
+
         def __repr__(self):
             return "<{0}({1})>".format(
                 self.__class__.__name__,
@@ -40,11 +80,11 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
 
     class Meta(type):
         def __new__(mcs, name, bases, namespace):
-            #print '__new__', mcs, name, bases, namespace
-            #print '       ', ancestor in bases, klass in bases, klass is mcs, klass is ancestor, mcs is ancestor
-            #if bases:
-            #    print '    ***', bases[0] is klass
             if klass in bases:
+                if not all_fields:
+                    raise TypeError("You're trying to use an empty Fields factory !")
+                if defaults and field is not None:
+                    raise TypeError("Can't add required fields after fields with defaults.")
                 return type(name, tuple(FieldsBase if k is klass else k for k in bases), namespace)
             else:
                 return type.__new__(mcs, name, bases, namespace)
@@ -56,86 +96,21 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
                 raise ValueError("Field %r is already specified with a default value (%r)." % (
                     name, defaults[name]
                 ))
-            return factory(name, required if field is None else required + (field,), defaults, Meta)
+            if defaults and field is not None:
+                raise TypeError("Can't add required fields after fields with defaults.")
+            return factory(name, full_required, defaults, Meta)
 
         def __call__(cls, default):
             if field is None:
                 raise ValueError("Can't set default %r. There's no previous field." % default)
 
-            defaults = {field: default}
-            defaults.update(defaults)
-            return factory(None, required, defaults, Meta)
+            new_defaults = {field: default}
+            new_defaults.update(defaults)
+            return factory(None, required, new_defaults, Meta)
 
     klass = Meta("Fields", (object,), {})
     return klass
 
 Fields = factory()
 
-def with_cmp(attrs):
-    """
-    A class decorator that adds comparison methods based on *attrs*.
-
-    Two instances are compared as if the respective values of *attrs* were
-    tuples.
-
-    :param attrs: Attributes to work with.
-    :type attrs: `list` of native strings
-    """
-    def attrs_to_tuple(obj):
-        """
-        Create a tuple of all values of *obj*'s *attrs*.
-        """
-        return tuple(getattr(obj, a) for a in attrs)
-
-    def eq(self, other):
-        if isinstance(other, self.__class__):
-            return attrs_to_tuple(self) == attrs_to_tuple(other)
-        else:
-            return NotImplemented
-
-    def ne(self, other):
-        result = eq(self, other)
-        if result is NotImplemented:
-            return NotImplemented
-        else:
-            return not result
-
-    def lt(self, other):
-        if isinstance(other, self.__class__):
-            return attrs_to_tuple(self) < attrs_to_tuple(other)
-        else:
-            return NotImplemented
-
-    def le(self, other):
-        if isinstance(other, self.__class__):
-            return attrs_to_tuple(self) <= attrs_to_tuple(other)
-        else:
-            return NotImplemented
-
-    def gt(self, other):
-        if isinstance(other, self.__class__):
-            return attrs_to_tuple(self) > attrs_to_tuple(other)
-        else:
-            return NotImplemented
-
-    def ge(self, other):
-        if isinstance(other, self.__class__):
-            return attrs_to_tuple(self) >= attrs_to_tuple(other)
-        else:
-            return NotImplemented
-
-    def hash_(self):
-        return hash(attrs_to_tuple(self))
-
-    def wrap(cl):
-        cl.__eq__ = eq
-        cl.__ne__ = ne
-        cl.__lt__ = lt
-        cl.__le__ = le
-        cl.__gt__ = gt
-        cl.__ge__ = ge
-        cl.__hash__ = hash_
-
-        return cl
-    return wrap
 
