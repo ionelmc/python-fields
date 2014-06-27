@@ -1,5 +1,6 @@
 from fields import Fields
 
+from pytest import fixture
 from pytest import raises
 
 
@@ -38,157 +39,130 @@ def test_factory_t3():
 def test_factory_empty_raise():
     raises(TypeError, type, "T5", (Fields,), {})
 
-#def test_plain():
-#    class Plain(Fields.a.b):
-#        pass
-#
-#def test_with_default():
-#    class Plain(Fields.a(2).b('foobar')):
-#        pass
+
+@fixture(scope="module")
+def cmp_class(request):
+    class CmpC(Fields.a.b):
+        pass
+
+    return CmpC
 
 
-#import pytest
-#
-#from characteristic import (
-#    attributes,
-#    with_cmp,
-#    with_init,
-#    with_repr,
-#)
-#
-#
-#@with_cmp(["a", "b"])
-#class CmpC(object):
-#    def __init__(self, a, b):
-#        self.a = a
-#        self.b = b
-#
-#
-#class TestWithCmp(object):
-#    def test_equal(self):
-#        """
-#        Equal objects are detected as equal.
-#        """
-#        assert CmpC(1, 2) == CmpC(1, 2)
-#        assert not (CmpC(1, 2) != CmpC(1, 2))
-#
-#    def test_unequal_same_class(self):
-#        """
-#        Unequal objects of correct type are detected as unequal.
-#        """
-#        assert CmpC(1, 2) != CmpC(2, 1)
-#        assert not (CmpC(1, 2) == CmpC(2, 1))
-#
-#    def test_unequal_different_class(self):
-#        """
-#        Unequal objects of differnt type are detected even if their attributes
-#        match.
-#        """
-#        class NotCmpC(object):
-#            a = 1
-#            b = 2
-#        assert CmpC(1, 2) != NotCmpC()
-#        assert not (CmpC(1, 2) == NotCmpC())
-#
-#    def test_lt(self):
-#        """
-#        __lt__ compares objects as tuples of attribute values.
-#        """
-#        for a, b in [
-#            ((1, 2),  (2, 1)),
-#            ((1, 2),  (1, 3)),
-#            (("a", "b"), ("b", "a")),
-#        ]:
-#            assert CmpC(*a) < CmpC(*b)
-#
-#    def test_lt_unordable(self):
-#        """
-#        __lt__ returns NotImplemented if classes differ.
-#        """
-#        assert NotImplemented == (CmpC(1, 2).__lt__(42))
-#
-#    def test_le(self):
-#        """
-#        __le__ compares objects as tuples of attribute values.
-#        """
-#        for a, b in [
-#            ((1, 2),  (2, 1)),
-#            ((1, 2),  (1, 3)),
-#            ((1, 1),  (1, 1)),
-#            (("a", "b"), ("b", "a")),
-#            (("a", "b"), ("a", "b")),
-#        ]:
-#            assert CmpC(*a) <= CmpC(*b)
-#
-#    def test_le_unordable(self):
-#        """
-#        __le__ returns NotImplemented if classes differ.
-#        """
-#        assert NotImplemented == (CmpC(1, 2).__le__(42))
-#
-#    def test_gt(self):
-#        """
-#        __gt__ compares objects as tuples of attribute values.
-#        """
-#        for a, b in [
-#            ((2, 1), (1, 2)),
-#            ((1, 3), (1, 2)),
-#            (("b", "a"), ("a", "b")),
-#        ]:
-#            assert CmpC(*a) > CmpC(*b)
-#
-#    def test_gt_unordable(self):
-#        """
-#        __gt__ returns NotImplemented if classes differ.
-#        """
-#        assert NotImplemented == (CmpC(1, 2).__gt__(42))
-#
-#    def test_ge(self):
-#        """
-#        __ge__ compares objects as tuples of attribute values.
-#        """
-#        for a, b in [
-#            ((2, 1), (1, 2)),
-#            ((1, 3), (1, 2)),
-#            ((1, 1), (1, 1)),
-#            (("b", "a"), ("a", "b")),
-#            (("a", "b"), ("a", "b")),
-#        ]:
-#            assert CmpC(*a) >= CmpC(*b)
-#
-#    def test_ge_unordable(self):
-#        """
-#        __ge__ returns NotImplemented if classes differ.
-#        """
-#        assert NotImplemented == (CmpC(1, 2).__ge__(42))
-#
-#    def test_hash(self):
-#        """
-#        __hash__ returns different hashes for different values.
-#        """
-#        assert hash(CmpC(1, 2)) != hash(CmpC(1, 1))
-#
-#
-#@with_repr(["a", "b"])
-#class ReprC(object):
-#    def __init__(self, a, b):
-#        self.a = a
-#        self.b = b
-#
-#
-#class TestReprAttrs(object):
-#    def test_repr(self):
-#        """
-#        Test repr returns a sensible value.
-#        """
-#        assert "<ReprC(a=1, b=2)>" == repr(ReprC(1, 2))
-#
-#
-#@with_init(["a", "b"])
-#class InitC(object):
-#    def __init__(self):
-#        if self.a == self.b:
-#            raise ValueError
+def test_equal(cmp_class):
+    """
+    Equal objects are detected as equal.
+    """
+    assert cmp_class(1, 2) == cmp_class(1, 2)
+    assert not (cmp_class(1, 2) != cmp_class(1, 2))
+
+
+def test_unequal_same_class(cmp_class):
+    """
+    Unequal objects of correct type are detected as unequal.
+    """
+    assert cmp_class(1, 2) != cmp_class(2, 1)
+    assert not (cmp_class(1, 2) == cmp_class(2, 1))
+
+
+def test_unequal_different_class(cmp_class):
+    """
+    Unequal objects of differnt type are detected even if their attributes
+    match.
+    """
+    class NotCmpC(object):
+        a = 1
+        b = 2
+    assert cmp_class(1, 2) != NotCmpC()
+    assert not (cmp_class(1, 2) == NotCmpC())
+
+
+def test_lt(cmp_class):
+    """
+    __lt__ compares objects as tuples of attribute values.
+    """
+    for a, b in [
+        ((1, 2),  (2, 1)),
+        ((1, 2),  (1, 3)),
+        (("a", "b"), ("b", "a")),
+    ]:
+        assert cmp_class(*a) < cmp_class(*b)
+
+
+def test_lt_unordable(cmp_class):
+    """
+    __lt__ returns NotImplemented if classes differ.
+    """
+    assert NotImplemented == (cmp_class(1, 2).__lt__(42))
+
+
+def test_le(cmp_class):
+    """
+    __le__ compares objects as tuples of attribute values.
+    """
+    for a, b in [
+        ((1, 2),  (2, 1)),
+        ((1, 2),  (1, 3)),
+        ((1, 1),  (1, 1)),
+        (("a", "b"), ("b", "a")),
+        (("a", "b"), ("a", "b")),
+    ]:
+        assert cmp_class(*a) <= cmp_class(*b)
+
+
+def test_le_unordable(cmp_class):
+    """
+    __le__ returns NotImplemented if classes differ.
+    """
+    assert NotImplemented == (cmp_class(1, 2).__le__(42))
+
+
+def test_gt(cmp_class):
+    """
+    __gt__ compares objects as tuples of attribute values.
+    """
+    for a, b in [
+        ((2, 1), (1, 2)),
+        ((1, 3), (1, 2)),
+        (("b", "a"), ("a", "b")),
+    ]:
+        assert cmp_class(*a) > cmp_class(*b)
+
+
+def test_gt_unordable(cmp_class):
+    """
+    __gt__ returns NotImplemented if classes differ.
+    """
+    assert NotImplemented == (cmp_class(1, 2).__gt__(42))
+
+
+def test_ge(cmp_class):
+    """
+    __ge__ compares objects as tuples of attribute values.
+    """
+    for a, b in [
+        ((2, 1), (1, 2)),
+        ((1, 3), (1, 2)),
+        ((1, 1), (1, 1)),
+        (("b", "a"), ("a", "b")),
+        (("a", "b"), ("a", "b")),
+    ]:
+        assert cmp_class(*a) >= cmp_class(*b)
+
+
+def test_ge_unordable(cmp_class):
+    """
+    __ge__ returns NotImplemented if classes differ.
+    """
+    assert NotImplemented == (cmp_class(1, 2).__ge__(42))
+
+
+def test_hash(cmp_class):
+    """
+    __hash__ returns different hashes for different values.
+    """
+    assert hash(cmp_class(1, 2)) != hash(cmp_class(1, 1))
+
+
 #
 #
 #class TestWithInit(object):
