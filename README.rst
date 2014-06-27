@@ -58,20 +58,121 @@ Make a class that has 2 attributes, ``a`` and ``b``::
 Make a class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
 ``None``::
 
-    >>> class Node(Fields.value.left(None).right(None)):
+    >>> class Node(Fields.value.left[None].right[None]):
     ...     pass
     ...
     >>> p = Node(1, left=Node(2), right=Node(3, left=Node(4)))
     >>> p
     <Node(left=<Node(left=None, right=None, value=2)>, right=<Node(left=<Node(left=None, right=None, value=4)>, right=None, value=3)>, value=1)>
 
-Ideas
-=====
+Want tuples ?
+-------------
 
-Alternative defaults api::
+Namedtuple alternative::
 
-    class Node(Fields.value.left[None].right[None]):
-        pass
+    >>> from fields import Tuple
+    >>> class Pair(Tuple.a.b):
+    ...     pass
+    ...
+    >>> p = Pair(1, 2)
+    >>> p.a
+    1
+    >>> p.b
+    2
+    >>> tuple(p)
+    (1, 2)
+    >>> a, b = p
+    >>> a
+    1
+    >>> b
+    2
+
+FAQ
+===
+
+:Q: Why ???
+:A: It's less to type, why have quotes around when the names need to be valid symbols anyway.
+
+..
+
+:Q: Really ... why ???
+:A: Because it's possible.
+
+..
+
+:Q: What's good about this ?
+:A: It's one of the shortest forms possible.
+
+..
+
+:Q: Is this stable ?
+:A: Yes. Mercilessly tested.
+
+..
+
+:Q: Is the API stable ?
+:A: It might change, unless you like it this way ;)
+
+..
+
+:Q: Why not ``namedtuple`` ?
+:A:
+    It's ugly, repetivive and unflexible. Compare this::
+
+        >>> from collections import namedtuple
+        >>> class MyContainer(namedtuple("MyContainer", ["field1", "field2"])):
+        ...     pass
+        >>> MyContainer(1, 2)
+        MyContainer(field1=1, field2=2)
+
+    To this::
+
+        >>> class MyContainer(Tuple.field1.field2):
+        ...     pass
+        >>> MyContainer(1, 2)
+        <MyContainer(field1=1, field2=2)>
+
+..
+
+:Q: Why not ``characteristic`` ?
+:A:
+    Ugly, inconsistent - you don't own the class:
+
+        Lets try this:
+
+            >>> import characteristic
+            >>> @characteristic.attributes(["field1", "field2"])
+            ... class MyContainer(object):
+            ...     def __init__(self, a, b):
+            ...         if a > b:
+            ...             raise ValueError("Expected %s < %s" % (a, b))
+            >>> MyContainer(1, 2)
+            Traceback (most recent call last):
+                ...
+            ValueError: Missing value for 'field1'.
+
+        WHAT !? Ok, lets write some more code::
+
+            >>> MyContainer(field1=1, field2=2)
+            Traceback (most recent call last):
+                ...
+            TypeError: __init__() ... arguments...
+
+        This is banans. You have to write your class *around* these quirks.
+
+    Lets try this::
+
+        >>> class MyContainer(Fields.field1.field2):
+        ...     def __init__(self, a, b):
+        ...         if a > b:
+        ...             raise ValueError("Expected %s < %s" % (a, b))
+        ...         super(MyContainer, self).__init__(a, b)
+
+    Just like a normal class, works as expected::
+
+        >>> MyContainer(1, 2)
+        <MyContainer(field1=1, field2=2)>
+
 
 Documentation
 =============
