@@ -6,7 +6,7 @@ __version__ = "0.1.0"
 MISSING = object()
 
 
-def factory(field=None, required=(), defaults=(), ancestor=None):
+def factory(field=None, required=(), defaults=()):
     klass = None
     full_required = required
     if field is not None:
@@ -98,7 +98,7 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
                 ))
             if defaults and field is not None:
                 raise TypeError("Can't add required fields after fields with defaults.")
-            return factory(name, full_required, defaults, Meta)
+            return factory(name, full_required, defaults)
 
         def __call__(cls, default):
             if field is None:
@@ -106,7 +106,7 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
 
             new_defaults = {field: default}
             new_defaults.update(defaults)
-            return factory(None, required, new_defaults, Meta)
+            return factory(None, required, new_defaults)
 
     klass = Meta("Fields", (object,), {})
     return klass
