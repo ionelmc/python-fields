@@ -29,7 +29,7 @@ Features:
 * Human-readable ``__repr__``
 * Complete set of comparison methods
 * Keyword and positional argument support. Works like a normal class - you can override just about anything in the
-  subclass (eg: a custom ``__init__``). In contrast, `hynek/characteristic <https://github.com/hynek/characteristic>`
+  subclass (eg: a custom ``__init__``). In contrast, `hynek/characteristic <https://github.com/hynek/characteristic>`_
   forces different call schematics and calls your ``__init__`` with different arguments.
 
 
