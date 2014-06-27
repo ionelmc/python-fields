@@ -149,5 +149,3 @@ def factory(field=None, required=(), defaults=()):
     return klass
 
 Fields = factory()
-
-
