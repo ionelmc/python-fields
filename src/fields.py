@@ -18,8 +18,8 @@ def class_factory(required, defaults, everything):
             for name, value in dict(defaults, **kwargs).items():
                 if name in required:
                     required_ = tuple(n for n in required_ if n != name)
-
                 setattr(self, name, value)
+
             for pos, (name, value) in enumerate(izip_longest(required_, args, fillvalue=MISSING)):
                 if value is MISSING:
                     raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
@@ -37,7 +37,7 @@ def class_factory(required, defaults, everything):
                 return NotImplemented
 
         def __ne__(self, other):
-            result = self == other
+            result = self.__eq__(other)
             if result is NotImplemented:
                 return NotImplemented
             else:
@@ -82,15 +82,24 @@ def tuple_factory(required, defaults, everything):
     if defaults:
         raise TypeError("tuple_factory doesn't support default arguments")
 
-    return type("TupleBase", (tuple,), dict(
-        [(name, property(itemgetter(i))) for i, name in enumerate(required)],
-        __new__=lambda cls, *args: tuple.__new__(cls, args),
-        __dict__=property(lambda self: dict(zip(required, self))),
-        __getnewargs__=lambda self: tuple(self),
-        __repr__=lambda self: "<{0}({1})>".format(
+    def __new__(cls, *args):
+        return tuple.__new__(cls, args)
+
+    def __getnewargs__(self):
+        return tuple(self)
+
+    def __repr__(self):
+        return "<{0}({1})>".format(
             self.__class__.__name__,
             ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
-        ),
+        )
+
+    return type("TupleBase", (tuple,), dict(
+        [(name, property(itemgetter(i))) for i, name in enumerate(required)],
+        __new__=__new__,
+        __getnewargs__=__getnewargs__,
+        __repr__=__repr__,
+        __slots__=(),
     ))
 
 
@@ -136,6 +145,8 @@ def factory(field=None, required=(), defaults=(), sealer=class_factory):
                     m4.__new__ => T (sealing branch, c4 is found bases)
                         returns type("T", (FieldsBase,), {}) instead
         """
+        concrete = None
+
         def __new__(mcs, name, bases, namespace):
             if klass in bases:
                 if not all_fields:
@@ -151,22 +162,30 @@ def factory(field=None, required=(), defaults=(), sealer=class_factory):
 
         def __getattr__(cls, name):
             if name in required:
-                raise ValueError("Field %r is already specified as required." % name)
+                raise TypeError("Field %r is already specified as required." % name)
             if name in defaults:
-                raise ValueError("Field %r is already specified with a default value (%r)." % (
+                raise TypeError("Field %r is already specified with a default value (%r)." % (
                     name, defaults[name]
                 ))
+            if name == field:
+                raise TypeError("Field %r is already specified as required." % name)
             if defaults and field is not None:
                 raise TypeError("Can't add required fields after fields with defaults.")
             return factory(name, full_required, defaults, sealer)
 
-        def __call__(cls, default):
+        def __getitem__(cls, default):
             if field is None:
-                raise ValueError("Can't set default %r. There's no previous field." % default)
+                raise TypeError("Can't set default %r. There's no previous field." % default)
 
             new_defaults = {field: default}
             new_defaults.update(defaults)
             return factory(None, required, new_defaults, sealer)
+
+        def __call__(self, *args, **kwargs):
+            if self.concrete is None:
+                self.concrete = sealer(full_required, defaults, all_fields)
+
+            return self.concrete(*args, **kwargs)
 
     klass = Meta("Fields", (object,), {})
     return klass

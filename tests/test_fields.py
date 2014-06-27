@@ -5,8 +5,9 @@ try:
     import cPickle
 except ImportError:
     import pickle as cPickle
-from itertools import chain
 from functools import partial
+from itertools import chain
+
 from pytest import fixture
 from pytest import raises
 
@@ -24,6 +25,7 @@ from fields import Tuple
 def pickler(request):
     return request.param
 
+
 @fixture(params=[pickle.loads, cPickle.loads])
 def unpickler(request):
     return request.param
@@ -33,8 +35,57 @@ class G1(Tuple.a.b):
     pass
 
 
-class G2(Fields.a.b(1).c(2)):
+class G2(Fields.a.b[1].c[2]):
     pass
+
+
+def test_defaults_on_tuples():
+    def test():
+        class Fail(Tuple.a.b['def']):
+            pass
+
+    raises(TypeError, test)
+
+def test_extra_args():
+    raises(TypeError, Fields.a.b, 1, 2, 3)
+
+
+def test_extra_args_2():
+    class X1(Fields.a.b):
+        pass
+
+    raises(TypeError, X1, 1, 2, 3)
+
+
+def test_missing_args():
+    raises(TypeError, Fields.a.b, 1)
+
+
+def test_missing_args_2():
+    class X1(Fields.a.b):
+        pass
+
+    raises(TypeError, X1, 1)
+
+
+def test_already_specified():
+    raises(TypeError, lambda: Fields.a[1].a)
+
+
+def test_already_specified_2():
+    raises(TypeError, lambda: Fields.a.a)
+
+
+def test_already_specified_3():
+    raises(TypeError, lambda: Fields.a.a[2])
+
+
+def test_already_specified_4():
+    raises(TypeError, lambda: Fields.a.b.a)
+
+
+def test_no_field():
+    raises(TypeError, lambda: Fields[123])
 
 
 def test_tuple_pickle(pickler, unpickler):
@@ -55,8 +106,15 @@ def test_tuple_factory():
     assert repr(t) == "<Z1(a=1, b=2)>"
 
 
+def test_nosubclass():
+    T1 = Fields.a.b.c[1].d[2]
+
+    t = T1(1, 2)
+    assert repr(t) == "<FieldsBase(a=1, b=2, c=1, d=2)>"
+
+
 def test_factory():
-    class T1(Fields.a.b.c(1).d(2)):
+    class T1(Fields.a.b.c[1].d[2]):
         pass
 
     t = T1(1, 2)
@@ -64,7 +122,7 @@ def test_factory():
 
 
 def test_factory_all_defaults():
-    class T2(Fields.a(0).b(1).c(2).d(3)):
+    class T2(Fields.a[0].b[1].c[2].d[3]):
         pass
 
     t = T2()
@@ -72,11 +130,11 @@ def test_factory_all_defaults():
 
 
 def test_factory_no_required_after_defaults():
-    raises(TypeError, getattr, Fields.a(0).b, 'c')
+    raises(TypeError, getattr, Fields.a[0].b, 'c')
 
 
 def test_factory_no_required_after_defaults_2():
-    raises(TypeError, type, 'Broken', (Fields.a(0).b,), {})
+    raises(TypeError, type, 'Broken', (Fields.a[0].b,), {})
 
 
 def test_factory_t3():
@@ -184,6 +242,13 @@ def test_gt_unordable(CmpC):
     __gt__ returns NotImplemented if classes differ.
     """
     assert NotImplemented == (CmpC(1, 2).__gt__(42))
+
+
+def test_ne_unordable(CmpC):
+    """
+    __gt__ returns NotImplemented if classes differ.
+    """
+    assert NotImplemented == (CmpC(1, 2).__ne__(42))
 
 
 def test_ge(CmpC):
