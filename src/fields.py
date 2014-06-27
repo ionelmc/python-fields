@@ -9,19 +9,13 @@ __version__ = "0.1.0"
 MISSING = object()
 
 
-def factory(field=None, required=(), defaults=()):
-    klass = None
-    full_required = required
-    if field is not None:
-        full_required += field,
-    all_fields = sorted(chain(full_required, defaults))
-
+def make_class(required, defaults, everything):
     class FieldsBase(object):
         def __init__(self, *args, **kwargs):
-            required_ = full_required
+            required_ = required
 
             for name, value in dict(defaults, **kwargs).items():
-                if name in full_required:
+                if name in required:
                     required_ = tuple(n for n in required_ if n != name)
 
                 setattr(self, name, value)
@@ -30,14 +24,14 @@ def factory(field=None, required=(), defaults=()):
                     raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
                 elif name is MISSING:
                     raise TypeError("%s takes at most %s arguments (%s given)" % (
-                        type(self).__name__, len(required), len(args)
+                        type(self).__name__, len(required_), len(args)
                     ))
                 else:
                     setattr(self, name, value)
 
         def __eq__(self, other):
             if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in all_fields) == tuple(getattr(other, a) for a in all_fields)
+                return tuple(getattr(self, a) for a in everything) == tuple(getattr(other, a) for a in everything)
             else:
                 return NotImplemented
 
@@ -50,36 +44,44 @@ def factory(field=None, required=(), defaults=()):
 
         def __lt__(self, other):
             if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in all_fields) < tuple(getattr(other, a) for a in all_fields)
+                return tuple(getattr(self, a) for a in everything) < tuple(getattr(other, a) for a in everything)
             else:
                 return NotImplemented
 
         def __le__(self, other):
             if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in all_fields) <= tuple(getattr(other, a) for a in all_fields)
+                return tuple(getattr(self, a) for a in everything) <= tuple(getattr(other, a) for a in everything)
             else:
                 return NotImplemented
 
         def __gt__(self, other):
             if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in all_fields) > tuple(getattr(other, a) for a in all_fields)
+                return tuple(getattr(self, a) for a in everything) > tuple(getattr(other, a) for a in everything)
             else:
                 return NotImplemented
 
         def __ge__(self, other):
             if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in all_fields) >= tuple(getattr(other, a) for a in all_fields)
+                return tuple(getattr(self, a) for a in everything) >= tuple(getattr(other, a) for a in everything)
             else:
                 return NotImplemented
 
         def __hash__(self):
-            return hash(tuple(getattr(self, a) for a in all_fields))
+            return hash(tuple(getattr(self, a) for a in everything))
 
         def __repr__(self):
             return "<{0}({1})>".format(
                 self.__class__.__name__,
-                ", ".join(a + "=" + repr(getattr(self, a)) for a in all_fields)
+                ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
             )
+    return FieldsBase
+
+def factory(field=None, required=(), defaults=()):
+    klass = None
+    full_required = required
+    if field is not None:
+        full_required += field,
+    all_fields = sorted(chain(full_required, defaults))
 
     class Meta(type):
         """
@@ -122,7 +124,10 @@ def factory(field=None, required=(), defaults=()):
                     raise TypeError("You're trying to use an empty Fields factory !")
                 if defaults and field is not None:
                     raise TypeError("Can't add required fields after fields with defaults.")
-                return type(name, tuple(FieldsBase if k is klass else k for k in bases), namespace)
+                return type(name, tuple(
+                    make_class(full_required, defaults, all_fields)
+                    if k is klass else k for k in bases
+                ), namespace)
             else:
                 return type.__new__(mcs, name, bases, namespace)
 
