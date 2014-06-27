@@ -1,9 +1,58 @@
 from __future__ import print_function
 
-from fields import Fields
-
+import pickle
+try:
+    import cPickle
+except ImportError:
+    import pickle as cPickle
+from itertools import chain
+from functools import partial
 from pytest import fixture
 from pytest import raises
+
+from fields import Fields
+from fields import Tuple
+
+
+@fixture(params=[
+    partial(pickle.dumps, protocol=i)
+    for i in range(pickle.HIGHEST_PROTOCOL)
+] + [
+    partial(cPickle.dumps, protocol=i)
+    for i in range(cPickle.HIGHEST_PROTOCOL)
+])
+def pickler(request):
+    return request.param
+
+@fixture(params=[pickle.loads, cPickle.loads])
+def unpickler(request):
+    return request.param
+
+
+class G1(Tuple.a.b):
+    pass
+
+
+class G2(Fields.a.b(1).c(2)):
+    pass
+
+
+def test_tuple_pickle(pickler, unpickler):
+    g = G1(1, 2)
+    assert unpickler(pickler(g)) == g
+
+
+def test_class_pickle(pickler, unpickler):
+    g = G2(1, c=0)
+    assert unpickler(pickler(g)) == g
+
+
+def test_tuple_factory():
+    class Z1(Tuple.a.b):
+        pass
+
+    t = Z1(1, 2)
+    assert repr(t) == "<Z1(a=1, b=2)>"
 
 
 def test_factory():
@@ -42,7 +91,7 @@ def test_factory_empty_raise():
     raises(TypeError, type, "T5", (Fields,), {})
 
 
-@fixture(scope="module")
+@fixture
 def CmpC(request):
     class CmpC(Fields.a.b):
         pass
@@ -165,7 +214,7 @@ def test_hash(CmpC):
     assert hash(CmpC(1, 2)) != hash(CmpC(1, 1))
 
 
-@fixture(scope="module")
+@fixture
 def InitC(request):
     class InitC(Fields.a.b):
         def __init__(self, *args, **kwargs):

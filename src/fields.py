@@ -1,4 +1,5 @@
 from itertools import chain
+from operator import itemgetter
 try:
     from itertools import izip_longest
 except ImportError:
@@ -9,7 +10,7 @@ __version__ = "0.1.0"
 MISSING = object()
 
 
-def make_class(required, defaults, everything):
+def class_factory(required, defaults, everything):
     class FieldsBase(object):
         def __init__(self, *args, **kwargs):
             required_ = required
@@ -76,7 +77,24 @@ def make_class(required, defaults, everything):
             )
     return FieldsBase
 
-def factory(field=None, required=(), defaults=()):
+
+def tuple_factory(required, defaults, everything):
+    if defaults:
+        raise TypeError("tuple_factory doesn't support default arguments")
+
+    return type("TupleBase", (tuple,), dict(
+        [(name, property(itemgetter(i))) for i, name in enumerate(required)],
+        __new__=lambda cls, *args: tuple.__new__(cls, args),
+        __dict__=property(lambda self: dict(zip(required, self))),
+        __getnewargs__=lambda self: tuple(self),
+        __repr__=lambda self: "<{0}({1})>".format(
+            self.__class__.__name__,
+            ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
+        ),
+    ))
+
+
+def factory(field=None, required=(), defaults=(), sealer=class_factory):
     klass = None
     full_required = required
     if field is not None:
@@ -115,7 +133,7 @@ def factory(field=None, required=(), defaults=()):
                         m4.__new__ => c4 (factory branch, c4 is not in bases)
 
                 class T(c4) => type("T", (c4,), {})
-                    m4.__new__ => T (materialized branch, c4 is found bases)
+                    m4.__new__ => T (sealing branch, c4 is found bases)
                         returns type("T", (FieldsBase,), {}) instead
         """
         def __new__(mcs, name, bases, namespace):
@@ -125,7 +143,7 @@ def factory(field=None, required=(), defaults=()):
                 if defaults and field is not None:
                     raise TypeError("Can't add required fields after fields with defaults.")
                 return type(name, tuple(
-                    make_class(full_required, defaults, all_fields)
+                    sealer(full_required, defaults, all_fields)
                     if k is klass else k for k in bases
                 ), namespace)
             else:
@@ -140,7 +158,7 @@ def factory(field=None, required=(), defaults=()):
                 ))
             if defaults and field is not None:
                 raise TypeError("Can't add required fields after fields with defaults.")
-            return factory(name, full_required, defaults)
+            return factory(name, full_required, defaults, sealer)
 
         def __call__(cls, default):
             if field is None:
@@ -148,9 +166,10 @@ def factory(field=None, required=(), defaults=()):
 
             new_defaults = {field: default}
             new_defaults.update(defaults)
-            return factory(None, required, new_defaults)
+            return factory(None, required, new_defaults, sealer)
 
     klass = Meta("Fields", (object,), {})
     return klass
 
 Fields = factory()
+Tuple = factory(sealer=tuple_factory)
