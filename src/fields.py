@@ -19,9 +19,9 @@ def factory(field=None, required=(), defaults=(), ancestor=None):
 
             for name, value in dict(defaults, **kwargs).items():
                 if name in full_required:
-                    required_ = tuple(n for n in required if n != name)
-                else:
-                    setattr(self, name, value)
+                    required_ = tuple(n for n in required_ if n != name)
+
+                setattr(self, name, value)
             for pos, (name, value) in enumerate(izip_longest(required_, args, fillvalue=MISSING)):
                 if value is MISSING:
                     raise TypeError("Required argument %r (pos %s) not found" % (name, pos))

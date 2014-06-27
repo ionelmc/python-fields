@@ -41,30 +41,30 @@ def test_factory_empty_raise():
 
 
 @fixture(scope="module")
-def cmp_class(request):
+def CmpC(request):
     class CmpC(Fields.a.b):
         pass
 
     return CmpC
 
 
-def test_equal(cmp_class):
+def test_equal(CmpC):
     """
     Equal objects are detected as equal.
     """
-    assert cmp_class(1, 2) == cmp_class(1, 2)
-    assert not (cmp_class(1, 2) != cmp_class(1, 2))
+    assert CmpC(1, 2) == CmpC(1, 2)
+    assert not (CmpC(1, 2) != CmpC(1, 2))
 
 
-def test_unequal_same_class(cmp_class):
+def test_unequal_same_class(CmpC):
     """
     Unequal objects of correct type are detected as unequal.
     """
-    assert cmp_class(1, 2) != cmp_class(2, 1)
-    assert not (cmp_class(1, 2) == cmp_class(2, 1))
+    assert CmpC(1, 2) != CmpC(2, 1)
+    assert not (CmpC(1, 2) == CmpC(2, 1))
 
 
-def test_unequal_different_class(cmp_class):
+def test_unequal_different_class(CmpC):
     """
     Unequal objects of differnt type are detected even if their attributes
     match.
@@ -72,11 +72,11 @@ def test_unequal_different_class(cmp_class):
     class NotCmpC(object):
         a = 1
         b = 2
-    assert cmp_class(1, 2) != NotCmpC()
-    assert not (cmp_class(1, 2) == NotCmpC())
+    assert CmpC(1, 2) != NotCmpC()
+    assert not (CmpC(1, 2) == NotCmpC())
 
 
-def test_lt(cmp_class):
+def test_lt(CmpC):
     """
     __lt__ compares objects as tuples of attribute values.
     """
@@ -85,17 +85,17 @@ def test_lt(cmp_class):
         ((1, 2),  (1, 3)),
         (("a", "b"), ("b", "a")),
     ]:
-        assert cmp_class(*a) < cmp_class(*b)
+        assert CmpC(*a) < CmpC(*b)
 
 
-def test_lt_unordable(cmp_class):
+def test_lt_unordable(CmpC):
     """
     __lt__ returns NotImplemented if classes differ.
     """
-    assert NotImplemented == (cmp_class(1, 2).__lt__(42))
+    assert NotImplemented == (CmpC(1, 2).__lt__(42))
 
 
-def test_le(cmp_class):
+def test_le(CmpC):
     """
     __le__ compares objects as tuples of attribute values.
     """
@@ -106,17 +106,17 @@ def test_le(cmp_class):
         (("a", "b"), ("b", "a")),
         (("a", "b"), ("a", "b")),
     ]:
-        assert cmp_class(*a) <= cmp_class(*b)
+        assert CmpC(*a) <= CmpC(*b)
 
 
-def test_le_unordable(cmp_class):
+def test_le_unordable(CmpC):
     """
     __le__ returns NotImplemented if classes differ.
     """
-    assert NotImplemented == (cmp_class(1, 2).__le__(42))
+    assert NotImplemented == (CmpC(1, 2).__le__(42))
 
 
-def test_gt(cmp_class):
+def test_gt(CmpC):
     """
     __gt__ compares objects as tuples of attribute values.
     """
@@ -125,17 +125,17 @@ def test_gt(cmp_class):
         ((1, 3), (1, 2)),
         (("b", "a"), ("a", "b")),
     ]:
-        assert cmp_class(*a) > cmp_class(*b)
+        assert CmpC(*a) > CmpC(*b)
 
 
-def test_gt_unordable(cmp_class):
+def test_gt_unordable(CmpC):
     """
     __gt__ returns NotImplemented if classes differ.
     """
-    assert NotImplemented == (cmp_class(1, 2).__gt__(42))
+    assert NotImplemented == (CmpC(1, 2).__gt__(42))
 
 
-def test_ge(cmp_class):
+def test_ge(CmpC):
     """
     __ge__ compares objects as tuples of attribute values.
     """
@@ -146,123 +146,68 @@ def test_ge(cmp_class):
         (("b", "a"), ("a", "b")),
         (("a", "b"), ("a", "b")),
     ]:
-        assert cmp_class(*a) >= cmp_class(*b)
+        assert CmpC(*a) >= CmpC(*b)
 
 
-def test_ge_unordable(cmp_class):
+def test_ge_unordable(CmpC):
     """
     __ge__ returns NotImplemented if classes differ.
     """
-    assert NotImplemented == (cmp_class(1, 2).__ge__(42))
+    assert NotImplemented == (CmpC(1, 2).__ge__(42))
 
 
-def test_hash(cmp_class):
+def test_hash(CmpC):
     """
     __hash__ returns different hashes for different values.
     """
-    assert hash(cmp_class(1, 2)) != hash(cmp_class(1, 1))
+    assert hash(CmpC(1, 2)) != hash(CmpC(1, 1))
 
 
-#
-#
-#class TestWithInit(object):
-#    def test_sets_attributes(self):
-#        """
-#        The attributes are initialized using the passed keywords.
-#        """
-#        obj = InitC(a=1, b=2)
-#        assert 1 == obj.a
-#        assert 2 == obj.b
-#
-#    def test_custom_init(self):
-#        """
-#        The class initializer is called too.
-#        """
-#        with pytest.raises(ValueError):
-#            InitC(a=1, b=1)
-#
-#    def test_passes_args(self):
-#        """
-#        All positional parameters are passed to the original initializer.
-#        """
-#        @with_init(["a"])
-#        class InitWithArg(object):
-#            def __init__(self, arg):
-#                self.arg = arg
-#
-#        obj = InitWithArg(42, a=1)
-#        assert 42 == obj.arg
-#        assert 1 == obj.a
-#
-#    def test_passes_remaining_kw(self):
-#        """
-#        Keyword arguments that aren't used for attributes are passed to the
-#        original initializer.
-#        """
-#        @with_init(["a"])
-#        class InitWithKWArg(object):
-#            def __init__(self, kw_arg=None):
-#                self.kw_arg = kw_arg
-#
-#        obj = InitWithKWArg(a=1, kw_arg=42)
-#        assert 42 == obj.kw_arg
-#        assert 1 == obj.a
-#
-#    def test_does_not_pass_attrs(self):
-#        """
-#        The attributes are removed from the keyword arguments before they are
-#        passed to the original initializer.
-#        """
-#        @with_init(["a"])
-#        class InitWithKWArgs(object):
-#            def __init__(self, **kw):
-#                assert "a" not in kw
-#                assert "b" in kw
-#        InitWithKWArgs(a=1, b=42)
-#
-#    def test_defaults(self):
-#        """
-#        If defaults are passed, they are used as fallback.
-#        """
-#        @with_init(["a", "b"], defaults={"b": 2})
-#        class InitWithDefaults(object):
-#            pass
-#        obj = InitWithDefaults(a=1)
-#        assert 2 == obj.b
-#
-#    def test_missing_arg(self):
-#        """
-#        Raises `ValueError` if a value isn't passed.
-#        """
-#        with pytest.raises(ValueError):
-#            InitC(a=1)
-#
-#
-#@attributes(["a", "b"], create_init=True)
-#class MagicWithInitC(object):
-#    pass
-#
-#
-#@attributes(["a", "b"], create_init=False)
-#class MagicWithoutInitC(object):
-#    pass
-#
-#
-#class TestAttributes(object):
-#    def test_leaves_init_alone(self):
-#        """
-#        If *create_init* is `False`, leave __init__ alone.
-#        """
-#        obj = MagicWithoutInitC()
-#        with pytest.raises(AttributeError):
-#            obj.a
-#        with pytest.raises(AttributeError):
-#            obj.b
-#
-#    def test_wraps_init(self):
-#        """
-#        If *create_init* is `True`, build initializer.
-#        """
-#        obj = MagicWithInitC(a=1, b=2)
-#        assert 1 == obj.a
-#        assert 2 == obj.b
+@fixture(scope="module")
+def InitC(request):
+    class InitC(Fields.a.b):
+        def __init__(self, *args, **kwargs):
+            super(InitC, self).__init__(*args, **kwargs)
+            if self.a == self.b:
+                raise ValueError
+
+    return InitC
+
+
+def test_sets_attributes(InitC):
+    """
+    The attributes are initialized using the passed keywords.
+    """
+    obj = InitC(a=1, b=2)
+    assert 1 == obj.a
+    assert 2 == obj.b
+
+
+def test_custom_init(InitC):
+    """
+    The class initializer is called too.
+    """
+    with raises(ValueError):
+        InitC(a=1, b=1)
+
+
+def test_passes_args(InitC):
+    """
+    All positional parameters are passed to the original initializer.
+    """
+    class InitWithArg(Fields.a):
+        def __init__(self, arg, **kwargs):
+            super(InitWithArg, self).__init__(**kwargs)
+            self.arg = arg
+
+    obj = InitWithArg(42, a=1)
+    assert 42 == obj.arg
+    assert 1 == obj.a
+
+
+def test_missing_arg(InitC):
+    """
+    Raises `ValueError` if a value isn't passed.
+    """
+    with raises(TypeError):
+        InitC(a=1)
