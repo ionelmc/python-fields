@@ -1,15 +1,75 @@
-from __future__ import absolute_import, division, print_function
+from itertools import chain
+from itertools import izip_longest
 
-"""
-Say 'yes' to types but 'no' to typing!
-"""
+__version__ = "0.1.0"
+
+MISSING = object()
 
 
-__version__ = "0.2.0dev"
-__author__ = "Hynek Schlawack"
-__license__ = "MIT"
-__copyright__ = "Copyright 2014 Hynek Schlawack"
+def factory(field=None, required=(), defaults=(), ancestor=None):
+    klass = None
+    full_required = required
+    if field is not None:
+        full_required += field,
+    all_fields = sorted(chain(full_required, defaults))
 
+    class FieldsBase(object):
+        def __init__(self, *args, **kwargs):
+            required_ = full_required
+
+            for name, value in dict(defaults, **kwargs).items():
+                if name in full_required:
+                    required_ = tuple(n for n in required if n != name)
+                else:
+                    setattr(self, name, value)
+            for pos, (name, value) in enumerate(izip_longest(required_, args, fillvalue=MISSING)):
+                if value is MISSING:
+                    raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
+                elif name is MISSING:
+                    raise TypeError("%s takes at most %s arguments (%s given)" % (
+                        type(self).__name__, len(required), len(args)
+                    ))
+                else:
+                    setattr(self, name, value)
+
+        def __repr__(self):
+            return "<{0}({1})>".format(
+                self.__class__.__name__,
+                ", ".join(a + "=" + repr(getattr(self, a)) for a in all_fields)
+            )
+
+    class Meta(type):
+        def __new__(mcs, name, bases, namespace):
+            #print '__new__', mcs, name, bases, namespace
+            #print '       ', ancestor in bases, klass in bases, klass is mcs, klass is ancestor, mcs is ancestor
+            #if bases:
+            #    print '    ***', bases[0] is klass
+            if klass in bases:
+                return type(name, tuple(FieldsBase if k is klass else k for k in bases), namespace)
+            else:
+                return type.__new__(mcs, name, bases, namespace)
+
+        def __getattr__(cls, name):
+            if name in required:
+                raise ValueError("Field %r is already specified as required." % name)
+            if name in defaults:
+                raise ValueError("Field %r is already specified with a default value (%r)." % (
+                    name, defaults[name]
+                ))
+            return factory(name, required if field is None else required + (field,), defaults, Meta)
+
+        def __call__(cls, default):
+            if field is None:
+                raise ValueError("Can't set default %r. There's no previous field." % default)
+
+            defaults = {field: default}
+            defaults.update(defaults)
+            return factory(None, required, defaults, Meta)
+
+    klass = Meta("Fields", (object,), {})
+    return klass
+
+Fields = factory()
 
 def with_cmp(attrs):
     """
@@ -79,81 +139,3 @@ def with_cmp(attrs):
         return cl
     return wrap
 
-
-def with_repr(attrs):
-    """
-    A class decorator that adds a human-friendly ``__repr__`` method that
-    returns a sensible representation based on *attrs*.
-
-    :param attrs: Attributes to work with.
-    :type attrs: Iterable of native strings.
-    """
-    def repr_(self):
-        return "<{0}({1})>".format(
-            self.__class__.__name__,
-            ", ".join(a + "=" + repr(getattr(self, a)) for a in attrs)
-        )
-
-    def wrap(cl):
-        cl.__repr__ = repr_
-        return cl
-
-    return wrap
-
-
-def with_init(attrs, defaults=None):
-    """
-    A class decorator that wraps the __init__ method of a class and sets
-    *attrs* first using keyword arguments.
-
-    :param attrs: Attributes to work with.
-    :type attrs: Iterable of native strings.
-
-    :param defaults: Default values if attributes are omitted on instantiation.
-    :type defaults: `dict` or `None`
-    """
-    if defaults is None:
-        defaults = {}
-
-    def init(self, *args, **kw):
-        for a in attrs:
-            try:
-                v = kw.pop(a)
-            except KeyError:
-                try:
-                    v = defaults[a]
-                except KeyError:
-                    raise ValueError("Missing value for '{0}'.".format(a))
-            setattr(self, a, v)
-        self.__original_init__(*args, **kw)
-
-    def wrap(cl):
-        cl.__original_init__ = cl.__init__
-        cl.__init__ = init
-        return cl
-
-    return wrap
-
-
-def attributes(attrs, defaults=None, create_init=True):
-    """
-    A convenience class decorator that combines :func:`with_cmp`,
-    :func:`with_repr`, and optionally :func:`with_init` to avoid code
-    duplication.
-
-    :param attrs: Attributes to work with.
-    :type attrs: Iterable of native strings.
-
-    :param defaults: Default values if attributes are omitted on instantiation.
-    :type defaults: `dict` or `None`
-
-    :param create_init: Also apply :func:`with_init` (default: `True`)
-    :type create_init: `bool`
-    """
-    def wrap(cl):
-        cl = with_cmp(attrs)(with_repr(attrs)(cl))
-        if create_init is True:
-            return with_init(attrs, defaults=defaults)(cl)
-        else:
-            return cl
-    return wrap
