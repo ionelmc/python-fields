@@ -1,5 +1,8 @@
 from itertools import chain
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 __version__ = "0.1.0"
 
@@ -79,6 +82,40 @@ def factory(field=None, required=(), defaults=()):
             )
 
     class Meta(type):
+        """
+        This class makes everything work. It a metaclass for the class that this factory returns. Each new chain
+        rebuilds everything.
+
+        Workflow::
+
+            class T(factory().a.b.c) breaks down to:
+                m1 = class Meta
+                c1 = instance of Meta
+                    m1.__new__ => c1 (factory branch, c1 is not in bases)
+                factory() => c1
+
+                c1.__getattr__ resolves to m1.__getattr__, c1 is instance of m1
+                c1.__getattr__('a') => factory('a')
+                    m2 = class Meta
+                    c2 = instance of Meta
+                        m2.__new__ => c2 (factory branch, c2 is not in bases)
+
+                c2.__getattr__ resolves to m2.__getattr__, c2 is instance of m2
+                c2.__getattr__('b') => factory('b', ('a',))
+                    m3 = class Meta
+                    c3 = instance of Meta
+                        m3.__new__ => c3 (factory branch, c3 is not in bases)
+
+                c3.__getattr__ resolves to m3.__getattr__, c3 is instance of m3
+                c3.__getattr__('c') => factory('c', ('a', 'b'))
+                    m4 = class Meta
+                    c4 = instance of Meta
+                        m4.__new__ => c4 (factory branch, c4 is not in bases)
+
+                class T(c4) => type("T", (c4,), {})
+                    m4.__new__ => T (materialized branch, c4 is found bases)
+                        returns type("T", (FieldsBase,), {}) instead
+        """
         def __new__(mcs, name, bases, namespace):
             if klass in bases:
                 if not all_fields:
