@@ -5,7 +5,7 @@ try:
 except ImportError:
     from itertools import zip_longest as izip_longest
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 MISSING = object()
 
