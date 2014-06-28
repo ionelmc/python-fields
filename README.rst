@@ -100,18 +100,25 @@ FAQ
 
 ..
 
+:Q: But you're abusing a very well known syntax. You're using attribute access as a list of strings. Why ?
+:A: Yes.
+
+..
+
 :Q: What's good about this ?
 :A: It's one of the shortest forms possible.
 
 ..
 
-:Q: Is this stable ?
-:A: Yes. Mercilessly tested.
+:Q: Is this stable ? Is it tested ?
+:A:
+    Yes. Mercilessly tested on `Travis <https://travis-ci.org/ionelmc/python-fields>`_ and `AppVeyor
+    <https://ci.appveyor.com/project/ionelmc/python-fields>`_.
 
 ..
 
 :Q: Is the API stable ?
-:A: It might change, unless you like it this way ;)
+:A: It can't get worse can it ;)
 
 ..
 
