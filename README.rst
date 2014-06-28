@@ -100,8 +100,8 @@ FAQ
 
 ..
 
-:Q: But you're abusing a very well known syntax. You're using attribute access as a list of strings. Why ?
-:A: Yes.
+:Q: But you're abusing a very well known syntax. You're using attribute access instead of a list of strings. Why ?
+:A: Yes. [*]_
 
 ..
 
@@ -179,6 +179,17 @@ FAQ
 
         >>> MyContainer(1, 2)
         <MyContainer(field1=1, field2=2)>
+
+.. [*]
+
+    Symbols should be symbols. The parity is remarcable - why validate strings so they are valid symbols when you can
+    avoid that ? Just use symbols. Dooh !
+
+    The use of language constructs is not that surprising - it's pretty obvious that in ``field2`` of ``field1`` of
+    ``fields.Fields`` there *can't possibly be anything else but a class implementing a container for said two fields*.
+
+    Why would anyone with a brain expect anything else ? It's like looking at a cake resembling a dog and expecting the
+    cake to bark and run around.
 
 
 Documentation
