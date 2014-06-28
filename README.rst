@@ -151,7 +151,7 @@ Why not ``characteristic`` ?
 
 Ugly, inconsistent - you don't own the class:
 
-    Lets try this:
+    Lets try this::
 
         >>> import characteristic
         >>> @characteristic.attributes(["field1", "field2"])
