@@ -63,7 +63,7 @@ Make a class that has one required attribute ``value`` and two attributes (``lef
     ...
     >>> p = Node(1, left=Node(2), right=Node(3, left=Node(4)))
     >>> p
-    <Node(left=<Node(left=None, right=None, value=2)>, right=<Node(left=<Node(left=None, right=None, value=4)>, right=None, value=3)>, value=1)>
+    Node(left=Node(left=None, right=None, value=2), right=Node(left=Node(left=None, right=None, value=4), right=None, value=3), value=1)
 
 Want tuples ?
 -------------
@@ -144,7 +144,7 @@ To this::
     >>> class MyContainer(Tuple.field1.field2):
     ...     pass
     >>> MyContainer(1, 2)
-    <MyContainer(field1=1, field2=2)>
+    MyContainer(field1=1, field2=2)
 
 Why not ``characteristic`` ?
 ----------------------------
@@ -184,7 +184,7 @@ Lets try this::
 Just like a normal class, works as expected::
 
     >>> MyContainer(1, 2)
-    <MyContainer(field1=1, field2=2)>
+    MyContainer(field1=1, field2=2)
 
 
 Documentation

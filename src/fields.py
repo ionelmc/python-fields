@@ -71,7 +71,7 @@ def class_factory(required, defaults, everything):
             return hash(tuple(getattr(self, a) for a in everything))
 
         def __repr__(self):
-            return "<{0}({1})>".format(
+            return "{0}({1})".format(
                 self.__class__.__name__,
                 ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
             )
@@ -89,7 +89,7 @@ def tuple_factory(required, defaults, everything):
         return tuple(self)
 
     def __repr__(self):
-        return "<{0}({1})>".format(
+        return "{0}({1})".format(
             self.__class__.__name__,
             ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
         )

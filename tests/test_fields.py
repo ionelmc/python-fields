@@ -103,14 +103,14 @@ def test_tuple_factory():
         pass
 
     t = Z1(1, 2)
-    assert repr(t) == "<Z1(a=1, b=2)>"
+    assert repr(t) == "Z1(a=1, b=2)"
 
 
 def test_nosubclass():
     T1 = Fields.a.b.c[1].d[2]
 
     t = T1(1, 2)
-    assert repr(t) == "<FieldsBase(a=1, b=2, c=1, d=2)>"
+    assert repr(t) == "FieldsBase(a=1, b=2, c=1, d=2)"
 
 
 def test_factory():
@@ -118,7 +118,7 @@ def test_factory():
         pass
 
     t = T1(1, 2)
-    assert repr(t) == "<T1(a=1, b=2, c=1, d=2)>"
+    assert repr(t) == "T1(a=1, b=2, c=1, d=2)"
 
 
 def test_factory_all_defaults():
@@ -126,7 +126,7 @@ def test_factory_all_defaults():
         pass
 
     t = T2()
-    assert repr(t) == "<T2(a=0, b=1, c=2, d=3)>"
+    assert repr(t) == "T2(a=0, b=1, c=2, d=3)"
 
 
 def test_factory_no_required_after_defaults():
@@ -142,7 +142,7 @@ def test_factory_t3():
         pass
 
     t = T3(1)
-    assert repr(t) == "<T3(a=1)>"
+    assert repr(t) == "T3(a=1)"
 
 
 def test_factory_empty_raise():
