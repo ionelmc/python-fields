@@ -65,7 +65,7 @@ Make a class that has one required attribute ``value`` and two attributes (``lef
     >>> p
     Node(left=Node(left=None, right=None, value=2), right=Node(left=Node(left=None, right=None, value=4), right=None, value=3), value=1)
 
-Want tuples ?
+Want tuples?
 -------------
 
 Namedtuple alternative::
@@ -90,16 +90,16 @@ Namedtuple alternative::
 FAQ
 ===
 
-Why should I use this ?
+Why should I use this?
 -----------------------
 
 It's less to type, why have quotes around when the names need to be valid symbols anyway. In fact, this is one
 of the shortest forms possible to specify a container with fields.
 
-But you're abusing a very well known syntax. You're using attribute access instead of a list of strings. Why ?
+But you're abusing a very well known syntax. You're using attribute access instead of a list of strings. Why?
 --------------------------------------------------------------------------------------------------------------
 
-Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that ? Just use
+Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that? Just use
 symbols. Save on both typing and validation code.
 
 The use of language constructs is not that surprising or confusing in the sense that semantics precede 
@@ -112,18 +112,18 @@ Again, you should not name your varibles as `f1`, `f2` or any other non-semantic
 Semantics precede syntax: it's like looking at a cake resembling a dog, you won't expect the cake to bark and
 run around.
 
-Is this stable ? Is it tested ?
+Is this stable? Is it tested?
 -------------------------------
 
 Yes. Mercilessly tested on `Travis <https://travis-ci.org/ionelmc/python-fields>`_ and `AppVeyor
 <https://ci.appveyor.com/project/ionelmc/python-fields>`_.
 
-Is the API stable ?
+Is the API stable?
 -------------------
 
 Yes, ofcourse.
 
-Why not ``namedtuple`` ?
+Why not ``namedtuple``?
 ------------------------
 
 It's ugly, repetivive and unflexible. Compare this::
@@ -141,7 +141,7 @@ To this::
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
 
-Why not ``characteristic`` ?
+Why not ``characteristic``?
 ----------------------------
 
 Ugly, inconsistent - you don't own the class:
@@ -166,7 +166,7 @@ Ugly, inconsistent - you don't own the class:
             ...
         TypeError: __init__() ... arguments...
 
-    This is banans. You have to write your class *around* these quirks.
+    This is bananas. You have to write your class *around* these quirks.
 
 Lets try this::
 
