@@ -90,32 +90,27 @@ Namedtuple alternative::
 FAQ
 ===
 
-Why ???
--------
+Why should I use this ?
+-----------------------
 
-It's less to type, why have quotes around when the names need to be valid symbols anyway.
-
-Really ... why ???
-------------------
-
-Because it's possible.
+It's less to type, why have quotes around when the names need to be valid symbols anyway. In fact, this is one
+of the shortest forms possible to specify a container with fields.
 
 But you're abusing a very well known syntax. You're using attribute access instead of a list of strings. Why ?
 --------------------------------------------------------------------------------------------------------------
 
 Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that ? Just use
-symbols. Dooh !
+symbols. Save on both typing and validation code.
 
-The use of language constructs is not that surprising - it's pretty obvious that in ``field2`` of ``field1`` of
-``fields.Fields`` there *can't possibly be anything else but a class implementing a container for said two fields*.
+The use of language constructs is not that surprising or confusing in the sense that semantics precede 
+conventional syntax use. For example, if we have ``class Person(Fields.first_name.last_name.height.weight): pass``
+then it's going to be clear we're talking about a `Person` object with `first_name`, `last_name`, `height` and 
+`width`: the words have clear meaning.
 
-Why would anyone with a brain expect anything else ? It's like looking at a cake resembling a dog and expecting the
-cake to bark and run around.
+Again, you should not name your varibles as `f1`, `f2` or any other non-semantic symbols anyway.
 
-What's good about this ?
-------------------------
-
-It's one of the shortest forms possible.
+Semantics precede syntax: it's like looking at a cake resembling a dog, you won't expect the cake to bark and
+run around.
 
 Is this stable ? Is it tested ?
 -------------------------------
@@ -126,7 +121,7 @@ Yes. Mercilessly tested on `Travis <https://travis-ci.org/ionelmc/python-fields>
 Is the API stable ?
 -------------------
 
-It can't get worse can it ;)
+Yes, ofcourse.
 
 Why not ``namedtuple`` ?
 ------------------------
