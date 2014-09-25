@@ -13,6 +13,7 @@ from pytest import raises
 
 from fields import Fields
 from fields import Tuple
+from fields import RegexValidate, ValidationError
 
 
 @fixture(params=[
@@ -327,3 +328,28 @@ def test_missing_arg(InitC):
     """
     with raises(TypeError):
         InitC(a=1)
+
+
+def test_regex_validator():
+    class Test(RegexValidate.value['aa+'], Fields.value):
+        pass
+
+    raises(ValidationError, Test, 'a')
+    raises(ValidationError, Test, '')
+    raises(ValidationError, Test, 'bb')
+
+    t = Test('aa')
+    assert t.value == 'aa'
+
+
+def test_regex_validator():
+    class Test(Fields.value, RegexValidate.value['aa+']):
+        pass
+
+    raises(ValidationError, Test, 'a')
+    raises(ValidationError, Test, '')
+    raises(ValidationError, Test, 'bb')
+
+    t = Test('aa')
+    assert t.value == 'aa'
+

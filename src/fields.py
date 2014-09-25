@@ -188,7 +188,43 @@ def factory(field=None, required=(), defaults=(), sealer=class_factory):
             return self.concrete(*args, **kwargs)
 
     klass = Meta("Fields", (object,), {})
+
+class ValidationError(Exception):
+    pass
+
+
+def regex_validation_factory(required, defaults, everything, RegexType=type(re.compile(""))):
+    if required:
+        raise TypeError("regex_validation_factory doesn't support required arguments")
+
+    klass = None
+    kwarg_validators = {
+        key: val if isinstance(val, RegexType) else re.compile(val) for key, val in defaults.items()
+    }
+    arg_validators = list(
+        kwarg_validators[key] for key in everything
+    )
+
+    def __init__(self, *args, **kwargs):
+        for pos, (value, validator) in enumerate(zip(args, arg_validators)):
+            if not validator.match(value):
+                raise ValidationError("Positional argument %s failed validation. %r doesn't match regex %r" % (
+                    pos, value, validator.pattern
+                ))
+        for key, value in kwargs.items():
+            if key in kwarg_validators:
+                validator = kwarg_validators[key]
+                if not validator.match(value):
+                    raise ValidationError("Keyword argument %r failed validation. %r doesn't match regex %r" % (
+                        key, value, validator.pattern
+                    ))
+        super(klass, self).__init__(*args, **kwargs)
+
+    klass = type("RegexValidateBase", (__base__,), dict(
+        __init__=__init__,
+    ))
     return klass
 
 Fields = factory()
 Tuple = factory(sealer=tuple_factory)
+RegexValidate = factory(sealer=regex_validation_factory)
