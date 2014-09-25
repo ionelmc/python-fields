@@ -1,3 +1,4 @@
+import re
 from itertools import chain
 from operator import itemgetter
 try:
@@ -10,8 +11,13 @@ __version__ = "0.3.0"
 MISSING = object()
 
 
+class __base__(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+
 def class_factory(required, defaults, everything):
-    class FieldsBase(object):
+    class FieldsBase(__base__):
         def __init__(self, *args, **kwargs):
             required_ = required
 
@@ -29,6 +35,7 @@ def class_factory(required, defaults, everything):
                     ))
                 else:
                     setattr(self, name, value)
+            super(FieldsBase, self).__init__(*args, **kwargs)
 
         def __eq__(self, other):
             if isinstance(other, self.__class__):
@@ -187,7 +194,15 @@ def factory(field=None, required=(), defaults=(), sealer=class_factory):
 
             return self.concrete(*args, **kwargs)
 
-    klass = Meta("Fields", (object,), {})
+    klass = Meta(
+        "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
+        if all_fields
+        else "Fields<%s>" % sealer.__name__,
+        (object,),
+        {}
+    )
+    return klass
+
 
 class ValidationError(Exception):
     pass
