@@ -213,9 +213,9 @@ def regex_validation_factory(required, defaults, everything, RegexType=type(re.c
         raise TypeError("regex_validation_factory doesn't support required arguments")
 
     klass = None
-    kwarg_validators = {
-        key: val if isinstance(val, RegexType) else re.compile(val) for key, val in defaults.items()
-    }
+    kwarg_validators = dict(
+        (key, val if isinstance(val, RegexType) else re.compile(val)) for key, val in defaults.items()
+    )
     arg_validators = list(
         kwarg_validators[key] for key in everything
     )
