@@ -102,9 +102,9 @@ But you're abusing a very well known syntax. You're using attribute access inste
 Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that? Just use
 symbols. Save on both typing and validation code.
 
-The use of language constructs is not that surprising or confusing in the sense that semantics precede 
+The use of language constructs is not that surprising or confusing in the sense that semantics precede
 conventional syntax use. For example, if we have ``class Person(Fields.first_name.last_name.height.weight): pass``
-then it's going to be clear we're talking about a *Person* object with *first_name*, *last_name*, *height* and 
+then it's going to be clear we're talking about a *Person* object with *first_name*, *last_name*, *height* and
 *width* fields: the words have clear meaning.
 
 Again, you should not name your varibles as `f1`, `f2` or any other non-semantic symbols anyway.
@@ -157,7 +157,7 @@ Ugly, inconsistent - you don't own the class:
         >>> MyContainer(1, 2)
         Traceback (most recent call last):
             ...
-        ValueError: Missing value for 'field1'.
+        ValueError: Missing keyword value for 'field1'.
 
     WHAT !? Ok, lets write some more code::
 
