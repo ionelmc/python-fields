@@ -109,6 +109,8 @@ def tuple_sealer(required, defaults, everything):
         __slots__=(),
     ))
 
+class __type__(type):
+    pass
 
 def factory(field=None, required=(), defaults=(), sealer=class_sealer):
     klass = None
@@ -117,7 +119,7 @@ def factory(field=None, required=(), defaults=(), sealer=class_sealer):
         full_required += field,
     all_fields = sorted(chain(full_required, defaults))
 
-    class Meta(type):
+    class Meta(__type__):
         """
         This class makes everything work. It a metaclass for the class that this factory returns. Each new chain
         rebuilds everything.
@@ -189,10 +191,12 @@ def factory(field=None, required=(), defaults=(), sealer=class_sealer):
             return factory(None, required, new_defaults, sealer)
 
         def __call__(self, *args, **kwargs):
+            return (~self)(*args, **kwargs)
+
+        def __invert__(self):
             if self.concrete is None:
                 self.concrete = sealer(full_required, defaults, all_fields)
-
-            return self.concrete(*args, **kwargs)
+            return self.concrete
 
     klass = Meta(
         "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
