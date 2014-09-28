@@ -16,7 +16,7 @@ class __base__(object):
         pass
 
 
-def class_factory(required, defaults, everything):
+def class_sealer(required, defaults, everything):
     class FieldsBase(__base__):
         def __init__(self, *args, **kwargs):
             required_ = required
@@ -85,9 +85,9 @@ def class_factory(required, defaults, everything):
     return FieldsBase
 
 
-def tuple_factory(required, defaults, everything):
+def tuple_sealer(required, defaults, everything):
     if defaults:
-        raise TypeError("tuple_factory doesn't support default arguments")
+        raise TypeError("tuple_sealer doesn't support default arguments")
 
     def __new__(cls, *args):
         return tuple.__new__(cls, args)
@@ -110,7 +110,7 @@ def tuple_factory(required, defaults, everything):
     ))
 
 
-def factory(field=None, required=(), defaults=(), sealer=class_factory):
+def factory(field=None, required=(), defaults=(), sealer=class_sealer):
     klass = None
     full_required = required
     if field is not None:
@@ -208,9 +208,9 @@ class ValidationError(Exception):
     pass
 
 
-def regex_validation_factory(required, defaults, everything, RegexType=type(re.compile(""))):
+def regex_validation_sealer(required, defaults, everything, RegexType=type(re.compile(""))):
     if required:
-        raise TypeError("regex_validation_factory doesn't support required arguments")
+        raise TypeError("regex_validation_sealer doesn't support required arguments")
 
     klass = None
     kwarg_validators = dict(
@@ -241,5 +241,5 @@ def regex_validation_factory(required, defaults, everything, RegexType=type(re.c
     return klass
 
 Fields = factory()
-Tuple = factory(sealer=tuple_factory)
-RegexValidate = factory(sealer=regex_validation_factory)
+Tuple = factory(sealer=tuple_sealer)
+RegexValidate = factory(sealer=regex_validation_sealer)
