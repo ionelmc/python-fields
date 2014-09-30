@@ -110,100 +110,113 @@ def tuple_sealer(required, defaults, everything):
     ))
 
 
-def factory(field=None, required=(), defaults=(), sealer=class_sealer):
-    klass = None
-    full_required = required
-    if field is not None:
-        full_required += field,
-    all_fields = sorted(chain(full_required, defaults))
+def _make_classname(all_fields, sealer):
+    if all_fields:
+        return "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
+    else:
+        return "Fields<%s>" % sealer.__name__
 
-    class Meta(type):
-        """
-        This class makes everything work. It a metaclass for the class that this factory returns. Each new chain
-        rebuilds everything.
 
-        Workflow::
+class Callable(object):
+    def __init__(self, func):
+        self.func = func
 
-            class T(factory().a.b.c) breaks down to:
-                m1 = class Meta
-                c1 = instance of Meta
-                    m1.__new__ => c1 (factory branch, c1 is not in bases)
-                factory() => c1
+    @property
+    def __name__(self):
+        return self.func.__name__
 
-                c1.__getattr__ resolves to m1.__getattr__, c1 is instance of m1
-                c1.__getattr__('a') => factory('a')
-                    m2 = class Meta
-                    c2 = instance of Meta
-                        m2.__new__ => c2 (factory branch, c2 is not in bases)
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
 
-                c2.__getattr__ resolves to m2.__getattr__, c2 is instance of m2
-                c2.__getattr__('b') => factory('b', ('a',))
-                    m3 = class Meta
-                    c3 = instance of Meta
-                        m3.__new__ => c3 (factory branch, c3 is not in bases)
 
-                c3.__getattr__ resolves to m3.__getattr__, c3 is instance of m3
-                c3.__getattr__('c') => factory('c', ('a', 'b'))
-                    m4 = class Meta
-                    c4 = instance of Meta
-                        m4.__new__ => c4 (factory branch, c4 is not in bases)
+class Factory(type):
+    """
+    This class makes everything work. It a metaclass for the class that users are going to use. Each new chain
+    rebuilds everything.
+    """
 
-                class T(c4) => type("T", (c4,), {})
-                    m4.__new__ => T (sealing branch, c4 is found bases)
-                        returns type("T", (FieldsBase,), {}) instead
-        """
-        concrete = None
+    __required = ()
+    __defaults = ()
+    __all_fields = ()
+    __last_field = None
+    __full_required = ()
+    __sealer = None
+    __concrete = None
 
-        def __new__(mcs, name, bases, namespace):
-            if klass in bases:
-                if not all_fields:
-                    raise TypeError("You're trying to use an empty Fields factory !")
-                if defaults and field is not None:
-                    raise TypeError("Can't add required fields after fields with defaults.")
-                return type(name, tuple(
-                    sealer(full_required, defaults, all_fields)
-                    if k is klass else k for k in bases
-                ), namespace)
-            else:
-                return type.__new__(mcs, name, bases, namespace)
+    def __getattr__(cls, name):
+        if name in cls.__required:
+            raise TypeError("Field %r is already specified as required." % name)
+        if name in cls.__defaults:
+            raise TypeError("Field %r is already specified with a default value (%r)." % (
+                name, cls.__defaults[name]
+            ))
+        if name == cls.__last_field:
+            raise TypeError("Field %r is already specified as required." % name)
+        if cls.__defaults and cls.__last_field is not None:
+            raise TypeError("Can't add required fields after fields with defaults.")
 
-        def __getattr__(cls, name):
-            if name in required:
-                raise TypeError("Field %r is already specified as required." % name)
-            if name in defaults:
-                raise TypeError("Field %r is already specified with a default value (%r)." % (
-                    name, defaults[name]
-                ))
-            if name == field:
-                raise TypeError("Field %r is already specified as required." % name)
-            if defaults and field is not None:
+        return Factory(
+            required=cls.__full_required,
+            defaults=cls.__defaults,
+            last_field=name,
+            sealer=cls.__sealer,
+        )
+
+    def __getitem__(cls, default):
+        if cls.__last_field is None:
+            raise TypeError("Can't set default %r. There's no previous field." % default)
+
+        new_defaults = {cls.__last_field: default}
+        new_defaults.update(cls.__defaults)
+        return Factory(
+            required=cls.__required,
+            defaults=new_defaults,
+            sealer=cls.__sealer,
+        )
+
+    def __new__(mcs, name="__blank__", bases=(), namespace={}, last_field=None, required=(), defaults=(), sealer=Callable(class_sealer)):
+        if not bases:
+            assert isinstance(sealer, Callable)
+
+            full_required = tuple(required)
+            if last_field is not None:
+                full_required += last_field,
+            all_fields = sorted(chain(full_required, defaults))
+
+            return type.__new__(
+                Factory,
+                "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
+                if all_fields else "Fields<%s>" % sealer.__name__,
+                bases,
+                dict(
+                    _Factory__required=required,
+                    _Factory__defaults=defaults,
+                    _Factory__all_fields=all_fields,
+                    _Factory__last_field=last_field,
+                    _Factory__full_required=full_required,
+                    _Factory__sealer=sealer,
+                )
+            )
+        else:
+            return type(name, tuple(
+                ~k if isinstance(k, Factory) else k for k in bases
+            ), namespace)
+
+    def __init__(cls, *args, **kwargs):
+        pass
+
+    def __call__(cls, *args, **kwargs):
+        return (~cls)(*args, **kwargs)
+
+    def __invert__(cls):
+        if cls.__concrete is None:
+            if not cls.__all_fields:
+                raise TypeError("You're trying to use an empty Fields factory !")
+            if cls.__defaults and cls.__last_field is not None:
                 raise TypeError("Can't add required fields after fields with defaults.")
-            return factory(name, full_required, defaults, sealer)
 
-        def __getitem__(cls, default):
-            if field is None:
-                raise TypeError("Can't set default %r. There's no previous field." % default)
-
-            new_defaults = {field: default}
-            new_defaults.update(defaults)
-            return factory(None, required, new_defaults, sealer)
-
-        def __call__(self, *args, **kwargs):
-            return (~self)(*args, **kwargs)
-
-        def __invert__(self):
-            if self.concrete is None:
-                self.concrete = sealer(full_required, defaults, all_fields)
-            return self.concrete
-
-    klass = Meta(
-        "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
-        if all_fields
-        else "Fields<%s>" % sealer.__name__,
-        (object,),
-        {}
-    )
-    return klass
+            cls.__concrete = cls.__sealer(cls.__full_required, cls.__defaults, cls.__all_fields)
+        return cls.__concrete
 
 
 class ValidationError(Exception):
@@ -242,6 +255,6 @@ def regex_validation_sealer(required, defaults, everything, RegexType=type(re.co
     ))
     return klass
 
-Fields = factory()
-Tuple = factory(sealer=tuple_sealer)
-RegexValidate = factory(sealer=regex_validation_sealer)
+Fields = Factory()
+Tuple = Factory(sealer=Callable(tuple_sealer))
+RegexValidate = Factory(sealer=Callable(regex_validation_sealer))
