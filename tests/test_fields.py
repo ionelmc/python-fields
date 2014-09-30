@@ -331,7 +331,7 @@ def test_missing_arg(InitC):
 
 
 def test_regex_validator():
-    class Test(RegexValidate.value['aa+'], ~Fields.value):
+    class Test(RegexValidate.value['aa+'], Fields.value):
         pass
 
     raises(ValidationError, Test, 'a')
@@ -343,8 +343,7 @@ def test_regex_validator():
 
 
 def test_regex_validator_rev():
-    A, B = Fields.value, RegexValidate.value['aa+']
-    class Test(Fields.value, ~RegexValidate.value['aa+']):
+    class Test(Fields.value, RegexValidate.value['aa+']):
         pass
 
     raises(ValidationError, Test, 'a')
