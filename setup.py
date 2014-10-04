@@ -19,7 +19,7 @@ def read(*names, **kwargs):
 
 setup(
     name="fields",
-    version="1.0.1",
+    version="1.0.2",
     license="BSD",
     description="An example package. Replace this with a proper project description. Generated with https://github.com/ionelmc/cookiecutter-pylibrary",
     long_description="%s\n%s" % (read("README.rst"), re.sub(":obj:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst"))),
