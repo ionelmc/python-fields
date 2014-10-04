@@ -99,7 +99,7 @@ https://python-fields.readthedocs.org/
 Development
 ===========
 
-To run the all tests run::
+To run all the tests run ``tox`` in your shell (``pip install tox`` if you don't have it)::
 
     tox
 
