@@ -384,3 +384,8 @@ def test_regex_validator_rev_incompatible_layout():
     raises(TypeError, test)
 
 
+def test_init_default_args_as_positional_args():
+    class MyContainer(Fields.a.b[2].c[3]):
+        pass
+
+    print(MyContainer(0, 1, 2))

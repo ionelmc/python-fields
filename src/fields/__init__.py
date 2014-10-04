@@ -38,22 +38,25 @@ def class_sealer(required, defaults, everything):
     """
     class FieldsBase(__base__):
         def __init__(self, *args, **kwargs):
-            required_ = required
-
-            for name, value in dict(defaults, **kwargs).items():
-                if name in required:
-                    required_ = tuple(n for n in required_ if n != name)
+            arguments = OrderedDict(zip(everything, args))
+            if len(args) > len(everything):
+                raise TypeError("%s() takes at most %s arguments (%s given)" % (len(everything), len(args)))
+            for name, value in kwargs.items():
+                if name in arguments:
+                    raise TypeError("%s() got multiple values for keyword "
+                                    "argument '%s'" % (type(self).__name__, name))
+                else:
+                    arguments[name] = value
+            for pos, name in enumerate(required):
+                if name not in arguments:
+                    raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
+            if defaults:
+                for name, value in defaults.items():
+                    if name not in arguments:
+                        arguments[name] = value
+            for name, value in arguments.items():
                 setattr(self, name, value)
 
-            for pos, (name, value) in enumerate(izip_longest(required_, args, fillvalue=MISSING)):
-                if value is MISSING:
-                    raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
-                elif name is MISSING:
-                    raise TypeError("%s takes at most %s arguments (%s given)" % (
-                        type(self).__name__, len(required_), len(args)
-                    ))
-                else:
-                    setattr(self, name, value)
             super(FieldsBase, self).__init__(*args, **kwargs)
 
         def __eq__(self, other):
