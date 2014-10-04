@@ -91,6 +91,18 @@ An alternative to ``namedtuple``::
     >>> b
     2
 
+Documentation
+=============
+
+https://python-fields.readthedocs.org/
+
+Development
+===========
+
+To run the all tests run::
+
+    tox
+
 FAQ
 ===
 
@@ -184,16 +196,3 @@ Just like a normal class, works as expected::
 
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
-
-
-Documentation
-=============
-
-https://python-fields.readthedocs.org/
-
-Development
-===========
-
-To run the all tests run::
-
-    tox
