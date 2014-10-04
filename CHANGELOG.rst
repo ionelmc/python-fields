@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.4.0 (2014-?)
+1.0.0 (2014-10-05)
 ------------------
 
 * Lots of internal changes, the metaclass is not created in a closure anymore. No more closures.
