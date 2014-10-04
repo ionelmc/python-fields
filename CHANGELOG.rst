@@ -13,7 +13,7 @@ Changelog
   usage.
 * Added validation so that you can't use conflicting field layout when using multiple containers as the baseclass.
 * Changed the __init__ function in the class container so it works like a python function w.r.t. positional and keyword
-  arguments. Example, ``class MyContainer(Fields.a.b.c[1].d[2])`` will function the same way as ``def func(a, b, c=1,
+  arguments. Example: ``class MyContainer(Fields.a.b.c[1].d[2])`` will function the same way as ``def func(a, b, c=1,
   d=2)`` would when arguments are passed in. You can now use ``MyContainer(1, 2, 3, 4)`` (everything positional) or
   ``MyContainer(1, 2, 3, d=4)`` (mixed).
 
