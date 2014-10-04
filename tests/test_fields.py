@@ -403,3 +403,16 @@ def test_init_default_args_as_positional_partial():
         pass
 
     assert repr(MyContainer(0, 1, c=2)) == 'MyContainer(a=0, b=1, c=2)'
+
+
+def test_init_unknown_kwargs():
+    class MyContainer(Fields.a.b[2].c[3]):
+        pass
+
+    raises(TypeError, MyContainer, 0, 1, x=2)
+
+
+def test_init_too_many_positional():
+    class MyContainer(Fields.a.b[2].c[3]):
+        pass
+    raises(TypeError, MyContainer, 0, 1, 2, 3)

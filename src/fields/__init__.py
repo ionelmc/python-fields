@@ -36,16 +36,17 @@ def class_sealer(required, defaults, everything):
         def __init__(self, *args, **kwargs):
             arguments = OrderedDict(zip(everything, args))
             if len(args) > len(everything):
-                raise TypeError("%s() takes at most %s arguments (%s given)" % (len(everything), len(args)))
+                raise TypeError("__init__() takes at most %s arguments (%s given)" % (len(everything), len(args)))
             for name, value in kwargs.items():
                 if name in arguments:
-                    raise TypeError("%s() got multiple values for keyword "
-                                    "argument '%s'" % (type(self).__name__, name))
+                    raise TypeError("__init__() got multiple values for keyword argument %r" % name)
+                elif name not in everything:
+                    raise TypeError("__init__() got an unexpected keyword argument %r" % name)
                 else:
                     arguments[name] = value
             for pos, name in enumerate(required):
                 if name not in arguments:
-                    raise TypeError("Required argument %r (pos %s) not found" % (name, pos))
+                    raise TypeError("__init__() requires argument %r (at position %s)" % (name, pos))
             if defaults:
                 for name, value in defaults.items():
                     if name not in arguments:
