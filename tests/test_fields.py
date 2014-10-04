@@ -377,6 +377,19 @@ def test_regex_validator_incompatible_layout_2():
     raises(TypeError, test)
 
 
+def test_regex_validator_bad_declaration():
+    def test():
+        class Test(RegexValidate.a.b['aa+']):
+            pass
+    raises(TypeError, test)
+
+
+def test_regex_validator_fail_validation():
+    class Test(RegexValidate.a['aa+']):
+        pass
+    raises(ValidationError, Test, 'a')
+
+
 def test_regex_validator_rev_incompatible_layout():
     def test():
         class Test(Fields.value, RegexValidate.balue['aa+']):
