@@ -40,10 +40,10 @@ Installation
 
     pip install fields
 
-Usage
-=====
+Usage & examples
+================
 
-Make a class that has 2 attributes, ``a`` and ``b``::
+A class that has 2 attributes, ``a`` and ``b``::
 
     >>> from fields import Fields
     >>> class Pair(Fields.a.b):
@@ -54,21 +54,25 @@ Make a class that has 2 attributes, ``a`` and ``b``::
     1
     >>> p.b
     2
+    >>> Pair(a=1, b=2)
+    Pair(a=1, b=2)
 
-Make a class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
+A class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
 ``None``::
 
     >>> class Node(Fields.value.left[None].right[None]):
     ...     pass
     ...
-    >>> p = Node(1, left=Node(2), right=Node(3, left=Node(4)))
-    >>> p
+    >>> Node(1, Node(2), Node(3, Node(4)))
     Node(value=1, left=Node(value=2, left=None, right=None), right=Node(value=3, left=Node(value=4, left=None, right=None), right=None))
+    >>> Node(1, right=Node(2))
+    Node(value=1, left=None, right=Node(value=2, left=None, right=None))
+
 
 Want tuples?
--------------
+------------
 
-Namedtuple alternative::
+An alternative to ``namedtuple``::
 
     >>> from fields import Tuple
     >>> class Pair(Tuple.a.b):
@@ -93,24 +97,24 @@ FAQ
 Why should I use this?
 -----------------------
 
-It's less to type, why have quotes around when the names need to be valid symbols anyway. In fact, this is one
-of the shortest forms possible to specify a container with fields.
+It's less to type, why have quotes around when the names need to be valid symbols anyway. In fact, this is one of the
+shortest forms possible to specify a container with fields.
 
 But you're abusing a very well known syntax. You're using attribute access instead of a list of strings. Why?
 --------------------------------------------------------------------------------------------------------------
 
-Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that? Just use
-symbols. Save on both typing and validation code.
+Symbols should be symbols. Why validate strings so they are valid symbols when you can avoid that? Just use symbols.
+Save on both typing and validation code.
 
-The use of language constructs is not that surprising or confusing in the sense that semantics precede
-conventional syntax use. For example, if we have ``class Person(Fields.first_name.last_name.height.weight): pass``
-then it's going to be clear we're talking about a *Person* object with *first_name*, *last_name*, *height* and
-*width* fields: the words have clear meaning.
+The use of language constructs is not that surprising or confusing in the sense that semantics precede conventional
+syntax use. For example, if we have ``class Person(Fields.first_name.last_name.height.weight): pass`` then it's going to
+be clear we're talking about a *Person* object with *first_name*, *last_name*, *height* and *width* fields: the words
+have clear meaning.
 
 Again, you should not name your varibles as `f1`, `f2` or any other non-semantic symbols anyway.
 
-Semantics precede syntax: it's like looking at a cake resembling a dog, you won't expect the cake to bark and
-run around.
+Semantics precede syntax: it's like looking at a cake resembling a dog, you won't expect the cake to bark and run
+around.
 
 Is this stable? Is it tested?
 -------------------------------
