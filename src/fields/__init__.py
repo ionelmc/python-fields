@@ -132,13 +132,6 @@ def tuple_sealer(required, defaults, everything):
     ))
 
 
-def _make_classname(all_fields, sealer):
-    if all_fields:
-        return "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
-    else:
-        return "Fields<%s>" % sealer.__name__
-
-
 class Callable(object):
     """
     Primitive wrapper around a function that makes it `un-bindable`.
