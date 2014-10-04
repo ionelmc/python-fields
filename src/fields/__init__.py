@@ -14,10 +14,6 @@ import re
 from itertools import chain
 from operator import itemgetter
 try:
-    from itertools import izip_longest
-except ImportError:
-    from itertools import zip_longest as izip_longest
-try:
     from collections import OrderedDict
 except ImportError:
     from .py2ordereddict import OrderedDict
