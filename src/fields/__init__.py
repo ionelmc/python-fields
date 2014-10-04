@@ -17,6 +17,10 @@ try:
     from itertools import izip_longest
 except ImportError:
     from itertools import zip_longest as izip_longest
+try:
+    from collections import OrderedDict
+except ImportError:
+    from .py2ordereddict import OrderedDict
 
 __version__ = "0.3.0"
 
@@ -190,8 +194,8 @@ class Factory(type):
         if cls.__last_field is None:
             raise TypeError("Can't set default %r. There's no previous field." % default)
 
-        new_defaults = {cls.__last_field: default}
-        new_defaults.update(cls.__defaults)
+        new_defaults = OrderedDict(cls.__defaults)
+        new_defaults[cls.__last_field] = default
         return Factory(
             required=cls.__required,
             defaults=new_defaults,
@@ -205,7 +209,7 @@ class Factory(type):
             full_required = tuple(required)
             if last_field is not None:
                 full_required += last_field,
-            all_fields = sorted(chain(full_required, defaults))
+            all_fields = list(chain(full_required, defaults))
 
             return type.__new__(
                 Factory,
@@ -222,6 +226,18 @@ class Factory(type):
                 )
             )
         else:
+            for pos, names in enumerate(zip(*[
+                k.__all_fields
+                for k in bases
+                if isinstance(k, Factory)
+            ])):
+                if names:
+                    if len(set(names)) != 1:
+                        raise TypeError("Field layout conflict: fields in position %s have different names: %s" % (
+                            pos,
+                            ', '.join(repr(name) for name in names)
+                        ))
+
             return type(name, tuple(
                 ~k if isinstance(k, Factory) else k for k in bases
             ), namespace)

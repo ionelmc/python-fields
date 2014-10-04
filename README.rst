@@ -63,7 +63,7 @@ Make a class that has one required attribute ``value`` and two attributes (``lef
     ...
     >>> p = Node(1, left=Node(2), right=Node(3, left=Node(4)))
     >>> p
-    Node(left=Node(left=None, right=None, value=2), right=Node(left=Node(left=None, right=None, value=4), right=None, value=3), value=1)
+    Node(value=1, left=Node(value=2, left=None, right=None), right=Node(value=3, left=Node(value=4, left=None, right=None), right=None))
 
 Want tuples?
 -------------

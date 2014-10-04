@@ -47,6 +47,15 @@ def test_defaults_on_tuples():
 
     raises(TypeError, test)
 
+
+def test_required_after_defaults():
+    def test():
+        class Fail(Tuple.a['def'].b):
+            pass
+
+    raises(TypeError, test)
+
+
 def test_extra_args():
     raises(TypeError, Fields.a.b, 1, 2, 3)
 
@@ -352,3 +361,26 @@ def test_regex_validator_rev():
 
     t = Test('aa')
     assert t.value == 'aa'
+
+
+def test_regex_validator_incompatible_layout():
+    def test():
+        class Test(RegexValidate.value['aa+'].extra['x'], Fields.value.extar['2'].a[3].b[4].c[5].d[6]):
+            pass
+    raises(TypeError, test)
+
+
+def test_regex_validator_incompatible_layout_2():
+    def test():
+        class Test(RegexValidate.value['aa+'], Fields.other):
+            pass
+    raises(TypeError, test)
+
+
+def test_regex_validator_rev_incompatible_layout():
+    def test():
+        class Test(Fields.value, RegexValidate.balue['aa+']):
+            pass
+    raises(TypeError, test)
+
+
