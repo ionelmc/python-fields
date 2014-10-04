@@ -388,4 +388,18 @@ def test_init_default_args_as_positional_args():
     class MyContainer(Fields.a.b[2].c[3]):
         pass
 
-    print(MyContainer(0, 1, 2))
+    assert repr(MyContainer(0, 1, 2)) == 'MyContainer(a=0, b=1, c=2)'
+
+
+def test_init_default_args_as_positional_misaligned():
+    class MyContainer(Fields.a.b[2].c[3]):
+        pass
+
+    raises(TypeError, MyContainer, 0, 1, b=2)
+
+
+def test_init_default_args_as_positional_partial():
+    class MyContainer(Fields.a.b[2].c[3]):
+        pass
+
+    assert repr(MyContainer(0, 1, c=2)) == 'MyContainer(a=0, b=1, c=2)'
