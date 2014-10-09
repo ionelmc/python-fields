@@ -11,6 +11,7 @@ How it works: the library is composed of 2 major parts:
   * Usage phase. When subclassed (there are bases) it will use the sealer to return the final class.
 """
 import re
+import sys
 from itertools import chain
 from operator import itemgetter
 try:
@@ -20,6 +21,7 @@ except ImportError:
 
 __version__ = "1.0.3"
 
+PY3 = sys.version_info[0] == 3
 MISSING = object()
 
 
@@ -28,33 +30,39 @@ class __base__(object):
         pass
 
 
+def _make_init_func(required, defaults, everything):
+    parts = [
+        'def __init__(self'
+    ]
+    for var in everything:
+        if var in defaults:
+            parts.append(', {0}={0}'.format(var))
+        else:
+            parts.append(', {0}'.format(var))
+    parts.append('):\n')
+    for var in everything:
+        parts.append('    self.{0} = {0}\n'.format(var))
+    parts.append('    super(FieldsBase, self).__init__(')
+    parts.append(', '.join('{0}={0}'.format(var) for var in everything))
+    parts.append(')\n')
+    local_namespace = dict(defaults)
+    global_namespace = dict(super=super)
+    code = ''.join(parts)
+    if PY3:
+        exec(code, global_namespace, local_namespace)
+    else:
+        exec("exec code in global_namespace, local_namespace")
+    return global_namespace, local_namespace
+
+
 def class_sealer(required, defaults, everything):
     """
     This sealer make a normal container class. It's mutable and supports arguments with default values.
     """
-    class FieldsBase(__base__):
-        def __init__(self, *args, **kwargs):
-            arguments = OrderedDict(zip(everything, args))
-            if len(args) > len(everything):
-                raise TypeError("__init__() takes at most %s arguments (%s given)" % (len(everything), len(args)))
-            for name, value in kwargs.items():
-                if name in arguments:
-                    raise TypeError("__init__() got multiple values for keyword argument %r" % name)
-                elif name not in everything:
-                    raise TypeError("__init__() got an unexpected keyword argument %r" % name)
-                else:
-                    arguments[name] = value
-            for pos, name in enumerate(required):
-                if name not in arguments:
-                    raise TypeError("__init__() requires argument %r (at position %s)" % (name, pos))
-            if defaults:
-                for name, value in defaults.items():
-                    if name not in arguments:
-                        arguments[name] = value
-            for name, value in arguments.items():
-                setattr(self, name, value)
+    global_namespace, local_namespace = _make_init_func(required, defaults, everything)
 
-            super(FieldsBase, self).__init__(*args, **kwargs)
+    class FieldsBase(__base__):
+        __init__ = local_namespace['__init__']
 
         def __eq__(self, other):
             if isinstance(other, self.__class__):
@@ -101,6 +109,7 @@ def class_sealer(required, defaults, everything):
                 self.__class__.__name__,
                 ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
             )
+    global_namespace['FieldsBase'] = FieldsBase
     return FieldsBase
 
 
