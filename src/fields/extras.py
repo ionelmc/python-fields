@@ -1,7 +1,9 @@
 import re
 
-from fields import Factory
+from fields import __base__
 from fields import Callable
+from fields import Factory
+
 
 class ValidationError(Exception):
     pass

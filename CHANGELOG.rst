@@ -5,6 +5,7 @@ Changelog
 2.0.0 (2014-10-16)
 ------------------
 
+* Make the __init__ in the FieldsBase way faster (used for ``fields.Fields``).
 * Move ``RegexValidate`` in ``fields.extras``.
 
 1.0.0 (2014-10-05)
