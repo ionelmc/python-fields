@@ -13,7 +13,7 @@ from pytest import raises
 
 from fields import Fields
 from fields import Tuple
-from fields import RegexValidate, ValidationError
+from fields.extras import RegexValidate, ValidationError
 
 
 @fixture(params=[

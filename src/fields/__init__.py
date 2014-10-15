@@ -10,7 +10,6 @@ How it works: the library is composed of 2 major parts:
   * Construction phase (there are no bases). Make new instances of the `Factory` with new state.
   * Usage phase. When subclassed (there are bases) it will use the sealer to return the final class.
 """
-import re
 import sys
 from itertools import chain
 from operator import itemgetter
@@ -261,45 +260,20 @@ class Factory(type):
         return cls.__concrete
 
 
-class ValidationError(Exception):
-    pass
-
-
-def regex_validation_sealer(required, defaults, everything, RegexType=type(re.compile(""))):
-    """
-    Example sealer that just does regex-based validation.
-    """
-    if required:
-        raise TypeError("regex_validation_sealer doesn't support required arguments")
-
-    klass = None
-    kwarg_validators = dict(
-        (key, val if isinstance(val, RegexType) else re.compile(val)) for key, val in defaults.items()
-    )
-    arg_validators = list(
-        kwarg_validators[key] for key in everything
-    )
-
-    def __init__(self, *args, **kwargs):
-        for pos, (value, validator) in enumerate(zip(args, arg_validators)):
-            if not validator.match(value):
-                raise ValidationError("Positional argument %s failed validation. %r doesn't match regex %r" % (
-                    pos, value, validator.pattern
-                ))
-        for key, value in kwargs.items():
-            if key in kwarg_validators:
-                validator = kwarg_validators[key]
-                if not validator.match(value):
-                    raise ValidationError("Keyword argument %r failed validation. %r doesn't match regex %r" % (
-                        key, value, validator.pattern
-                    ))
-        super(klass, self).__init__(*args, **kwargs)
-
-    klass = type("RegexValidateBase", (__base__,), dict(
-        __init__=__init__,
-    ))
-    return klass
-
 Fields = Factory()
 Tuple = Factory(sealer=Callable(tuple_sealer))
-RegexValidate = Factory(sealer=Callable(regex_validation_sealer))
+
+class Namespace(object):
+    """
+    A backport of Python 3.3's ``types.SimpleNamespace``.
+    """
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __repr__(self):
+        keys = sorted(self.__dict__)
+        items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
+        return "{}({})".format(type(self).__name__, ", ".join(items))
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
