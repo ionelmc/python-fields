@@ -260,9 +260,6 @@ class Factory(type):
         return cls.__concrete
 
 
-Fields = Factory()
-Tuple = Factory(sealer=Callable(tuple_sealer))
-
 class Namespace(object):
     """
     A backport of Python 3.3's ``types.SimpleNamespace``.
@@ -277,3 +274,7 @@ class Namespace(object):
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+
+Fields = Factory()
+Tuple = Factory(sealer=Callable(tuple_sealer))
