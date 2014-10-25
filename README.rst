@@ -196,3 +196,10 @@ Just like a normal class, works as expected::
 
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
+
+
+Won't this confuse ``pylint``?
+------------------------------
+
+Normaly it would, but there's a plugin that makes pylint understand it, just like any other class: 
+`pylint-fields <https://github.com/ionelmc/pylint-fields>`_.
