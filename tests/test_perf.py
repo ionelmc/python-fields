@@ -8,6 +8,7 @@ from characteristic import attributes
 
 from fields import __base__
 from fields import Fields
+from fields import Tuple
 
 
 @attributes(["a", "b", Attribute("c", default_value="abc")])
@@ -18,6 +19,9 @@ class characteristic_class(object):
 class fields_class(Fields.a.b.c["abc"]):
     pass
 
+
+class tuple_class(Tuple.a.b.c["abc"]):
+    pass
 
 
 def make_super_dumb_class():
@@ -54,6 +58,9 @@ def test_super_dumb(benchmark):
 def test_dumb(benchmark):
     assert benchmark(partial(dumb_class, a=1, b=2, c=1))
 
+
+def test_tuple(benchmark):
+    assert benchmark(partial(tuple_class, a=1, b=2, c=1))
 
 
 def test_namedtuple(benchmark):

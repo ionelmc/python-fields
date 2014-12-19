@@ -2,6 +2,11 @@
 Changelog
 =========
 
+2.1.0 (2014-12-20)
+------------------
+
+* Add support for default argument to Tuple.
+
 2.0.0 (2014-10-16)
 ------------------
 

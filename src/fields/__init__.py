@@ -29,24 +29,32 @@ class __base__(object):
         pass
 
 
-def _make_init_func(required, defaults, everything):
-    parts = [
-        'def __init__(self'
-    ]
+def _make_init_func(required, defaults, everything,
+                    header='def __init__(self',
+                    call_start='super(FieldsBase, self).__init__(',
+                    call_end=')\n',
+                    kw=True, attrs=True):
+    parts = [header]
     for var in everything:
         if var in defaults:
             parts.append(', {0}={0}'.format(var))
         else:
             parts.append(', {0}'.format(var))
     parts.append('):\n')
-    for var in everything:
-        parts.append('    self.{0} = {0}\n'.format(var))
-    parts.append('    super(FieldsBase, self).__init__(')
-    parts.append(', '.join('{0}={0}'.format(var) for var in everything))
-    parts.append(')\n')
+    if attrs:
+        for var in everything:
+            parts.append('    self.{0} = {0}\n'.format(var))
+    parts.append('    ')
+    parts.append(call_start)
+    if kw:
+        parts.append(', '.join('{0}={0}'.format(var) for var in everything))
+    else:
+        parts.append(', '.join('{0}'.format(var) for var in everything))
+    parts.append(call_end)
     local_namespace = dict(defaults)
     global_namespace = dict(super=super)
     code = ''.join(parts)
+
     if PY3:
         exec(code, global_namespace, local_namespace)
     else:
@@ -116,11 +124,13 @@ def tuple_sealer(required, defaults, everything):
     """
     This sealer returns an equivalent of a ``namedtuple``.
     """
-    if defaults:
-        raise TypeError("tuple_sealer doesn't support default arguments")
-
-    def __new__(cls, *args):
-        return tuple.__new__(cls, args)
+    global_namespace, local_namespace = _make_init_func(
+        required, defaults, everything,
+        header='def __new__(cls',
+        call_start='return tuple.__new__(cls, (',
+        call_end='))\n',
+        kw=False, attrs=False,
+    )
 
     def __getnewargs__(self):
         return tuple(self)
@@ -132,8 +142,8 @@ def tuple_sealer(required, defaults, everything):
         )
 
     return type("TupleBase", (tuple,), dict(
-        [(name, property(itemgetter(i))) for i, name in enumerate(required)],
-        __new__=__new__,
+        [(name, property(itemgetter(i))) for i, name in enumerate(everything)],
+        __new__=local_namespace['__new__'],
         __getnewargs__=__getnewargs__,
         __repr__=__repr__,
         __slots__=(),

@@ -41,11 +41,10 @@ class G2(Fields.a.b[1].c[2]):
 
 
 def test_defaults_on_tuples():
-    def test():
-        class Fail(Tuple.a.b['def']):
-            pass
-
-    raises(TypeError, test)
+    class Ok(Tuple.a.b['def']):
+        pass
+    assert Ok(1).b == 'def'
+    assert Ok(1, 2).b == 2
 
 
 def test_required_after_defaults():
