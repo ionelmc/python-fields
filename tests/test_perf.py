@@ -1,5 +1,7 @@
-from pytest import mark
 from collections import namedtuple
+from functools import partial
+
+from pytest import mark
 
 from characteristic import Attribute
 from characteristic import attributes
@@ -15,6 +17,8 @@ class characteristic_class(object):
 
 class fields_class(Fields.a.b.c["abc"]):
     pass
+
+
 
 def make_super_dumb_class():
     class super_dumb_class(__base__):
@@ -36,24 +40,21 @@ namedtuple_class = namedtuple("namedtuple_class", ["a", "b", "c"])
 
 
 def test_characteristic(benchmark):
-    with benchmark:
-        assert characteristic_class(a=1, b=2, c=1)
+    assert benchmark(partial(characteristic_class, a=1, b=2, c=1))
 
 
 def test_fields(benchmark):
-    with benchmark:
-        assert fields_class(a=1, b=2, c=1)
+    assert benchmark(partial(fields_class, a=1, b=2, c=1))
 
 
 def test_super_dumb(benchmark):
-    with benchmark:
-        assert super_dumb_class(a=1, b=2, c=1)
+    assert benchmark(partial(super_dumb_class, a=1, b=2, c=1))
 
 
 def test_dumb(benchmark):
-    with benchmark:
-        assert dumb_class(a=1, b=2, c=1)
+    assert benchmark(partial(dumb_class, a=1, b=2, c=1))
+
+
 
 def test_namedtuple(benchmark):
-    with benchmark:
-        assert namedtuple_class(a=1, b=2, c=1)
+    assert benchmark(partial(namedtuple_class, a=1, b=2, c=1))
