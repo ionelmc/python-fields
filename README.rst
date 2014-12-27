@@ -1,26 +1,53 @@
 ===============================
-python-fields
+        python-fields
 ===============================
 
-.. image:: http://img.shields.io/travis/ionelmc/python-fields/master.png
+| |docs| |travis| |appveyor| |coveralls| |landscape| |scrutinizer|
+| |version| |downloads| |wheel| |supported-versions| |supported-implementations|
+
+.. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
+    :target: https://readthedocs.org/projects/python-fields
+    :alt: Documentation Status
+
+.. |travis| image:: http://img.shields.io/travis/ionelmc/python-fields/master.png?style=flat
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/ionelmc/python-fields
 
-.. image:: https://ci.appveyor.com/api/projects/status/hrpb3ksl0sf1qyi8/branch/master
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/python-fields?branch=master
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/ionelmc/python-fields
 
-.. image:: http://img.shields.io/coveralls/ionelmc/python-fields/master.png
+.. |coveralls| image:: http://img.shields.io/coveralls/ionelmc/python-fields/master.png?style=flat
     :alt: Coverage Status
     :target: https://coveralls.io/r/ionelmc/python-fields
 
-.. image:: http://img.shields.io/pypi/v/fields.png
-    :alt: PYPI Package
+.. |landscape| image:: https://landscape.io/github/ionelmc/python-fields/master/landscape.svg?style=flat
+    :target: https://landscape.io/github/ionelmc/python-fields/master
+    :alt: Code Quality Status
+
+.. |version| image:: http://img.shields.io/pypi/v/fields.png?style=flat
+    :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/fields
 
-.. image:: http://img.shields.io/pypi/dm/fields.png
-    :alt: PYPI Package
+.. |downloads| image:: http://img.shields.io/pypi/dm/fields.png?style=flat
+    :alt: PyPI Package monthly downloads
     :target: https://pypi.python.org/pypi/fields
+
+.. |wheel| image:: https://pypip.in/wheel/fields/badge.png?style=flat
+    :alt: PyPI Wheel
+    :target: https://pypi.python.org/pypi/fields
+
+.. |supported-versions| image:: https://pypip.in/py_versions/fields/badge.png?style=flat
+    :alt: Supported versions
+    :target: https://pypi.python.org/pypi/fields
+
+.. |supported-implementations| image:: https://pypip.in/implementation/fields/badge.png?style=flat
+    :alt: Supported imlementations
+    :target: https://pypi.python.org/pypi/fields
+
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.png?style=flat
+    :alt: Scrtinizer Status
+    :target: https://scrutinizer-ci.com/g/ionelmc/python-fields/
 
 Container class boilerplate killer.
 
@@ -219,5 +246,5 @@ Just like a normal class, works as expected:
 Won't this confuse ``pylint``?
 ------------------------------
 
-Normaly it would, but there's a plugin that makes pylint understand it, just like any other class: 
+Normaly it would, but there's a plugin that makes pylint understand it, just like any other class:
 `pylint-fields <https://github.com/ionelmc/pylint-fields>`_.
