@@ -43,7 +43,9 @@ Installation
 Usage & examples
 ================
 
-A class that has 2 attributes, ``a`` and ``b``::
+A class that has 2 attributes, ``a`` and ``b``:
+
+.. code:: pycon
 
     >>> from fields import Fields
     >>> class Pair(Fields.a.b):
@@ -58,7 +60,9 @@ A class that has 2 attributes, ``a`` and ``b``::
     Pair(a=1, b=2)
 
 A class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
-``None``::
+``None``:
+
+.. code:: pycon
 
     >>> class Node(Fields.value.left[None].right[None]):
     ...     pass
@@ -72,7 +76,9 @@ A class that has one required attribute ``value`` and two attributes (``left`` a
 Want tuples?
 ------------
 
-An alternative to ``namedtuple``::
+An alternative to ``namedtuple``:
+
+.. code:: pycon
 
     >>> from fields import Tuple
     >>> class Pair(Tuple.a.b):
@@ -142,7 +148,9 @@ Yes, ofcourse.
 Why not ``namedtuple``?
 ------------------------
 
-It's ugly, repetivive and unflexible. Compare this::
+It's ugly, repetivive and unflexible. Compare this:
+
+.. code:: pycon
 
     >>> from collections import namedtuple
     >>> class MyContainer(namedtuple("MyContainer", ["field1", "field2"])):
@@ -150,7 +158,9 @@ It's ugly, repetivive and unflexible. Compare this::
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
 
-To this::
+To this:
+
+.. code:: pycon
 
     >>> class MyContainer(Tuple.field1.field2):
     ...     pass
@@ -162,7 +172,9 @@ Why not ``characteristic``?
 
 Ugly, inconsistent - you don't own the class:
 
-    Lets try this::
+    Lets try this:
+
+    .. code:: pycon
 
         >>> import characteristic
         >>> @characteristic.attributes(["field1", "field2"])
@@ -175,7 +187,9 @@ Ugly, inconsistent - you don't own the class:
             ...
         ValueError: Missing keyword value for 'field1'.
 
-    WHAT !? Ok, lets write some more code::
+    WHAT !? Ok, lets write some more code:
+
+    .. code:: pycon
 
         >>> MyContainer(field1=1, field2=2)
         Traceback (most recent call last):
@@ -184,7 +198,9 @@ Ugly, inconsistent - you don't own the class:
 
     This is bananas. You have to write your class *around* these quirks.
 
-Lets try this::
+Lets try this:
+
+.. code:: pycon
 
     >>> class MyContainer(Fields.field1.field2):
     ...     def __init__(self, a, b):
@@ -192,7 +208,9 @@ Lets try this::
     ...             raise ValueError("Expected %s < %s" % (a, b))
     ...         super(MyContainer, self).__init__(a, b)
 
-Just like a normal class, works as expected::
+Just like a normal class, works as expected:
+
+.. code:: pycon
 
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
