@@ -89,7 +89,7 @@ A class that has 2 attributes, ``a`` and ``b``:
 A class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
 ``None``:
 
-.. code:: pycon
+.. code:: python
 
     >>> class Node(Fields.value.left[None].right[None]):
     ...     pass
@@ -105,7 +105,7 @@ Want tuples?
 
 An alternative to ``namedtuple``:
 
-.. code:: pycon
+.. code:: python
 
     >>> from fields import Tuple
     >>> class Pair(Tuple.a.b):
@@ -177,7 +177,7 @@ Why not ``namedtuple``?
 
 It's ugly, repetivive and unflexible. Compare this:
 
-.. code:: pycon
+.. code:: python
 
     >>> from collections import namedtuple
     >>> class MyContainer(namedtuple("MyContainer", ["field1", "field2"])):
@@ -187,7 +187,7 @@ It's ugly, repetivive and unflexible. Compare this:
 
 To this:
 
-.. code:: pycon
+.. code:: python
 
     >>> class MyContainer(Tuple.field1.field2):
     ...     pass
@@ -201,7 +201,7 @@ Ugly, inconsistent - you don't own the class:
 
     Lets try this:
 
-    .. code:: pycon
+    .. code:: python
 
         >>> import characteristic
         >>> @characteristic.attributes(["field1", "field2"])
@@ -216,7 +216,7 @@ Ugly, inconsistent - you don't own the class:
 
     WHAT !? Ok, lets write some more code:
 
-    .. code:: pycon
+    .. code:: python
 
         >>> MyContainer(field1=1, field2=2)
         Traceback (most recent call last):
@@ -227,7 +227,7 @@ Ugly, inconsistent - you don't own the class:
 
 Lets try this:
 
-.. code:: pycon
+.. code:: python
 
     >>> class MyContainer(Fields.field1.field2):
     ...     def __init__(self, a, b):
@@ -237,7 +237,7 @@ Lets try this:
 
 Just like a normal class, works as expected:
 
-.. code:: pycon
+.. code:: python
 
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
