@@ -72,7 +72,7 @@ Usage & examples
 
 A class that has 2 attributes, ``a`` and ``b``:
 
-.. sourcecode:: pycon
+.. code:: python
 
     >>> from fields import Fields
     >>> class Pair(Fields.a.b):
