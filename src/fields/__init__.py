@@ -241,7 +241,9 @@ class Factory(type):
             sealer=cls.__sealer,
         )
 
-    def __new__(mcs, name="__blank__", bases=(), namespace={}, last_field=None, required=(), defaults=(), sealer=Callable(class_sealer)):
+    def __new__(mcs, name="__blank__", bases=(), namespace=None, last_field=None, required=(), defaults=(),
+                sealer=Callable(class_sealer)):
+
         if not bases:
             assert isinstance(sealer, Callable)
 
@@ -279,7 +281,7 @@ class Factory(type):
 
             return type(name, tuple(
                 ~k if isinstance(k, Factory) else k for k in bases
-            ), namespace)
+            ), {} if namespace is None else namespace)
 
     def __init__(cls, *args, **kwargs):
         pass
