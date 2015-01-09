@@ -24,6 +24,19 @@ PY3 = sys.version_info[0] == 3
 MISSING = object()
 
 
+def _with_metaclass(meta, *bases):
+    # See: http://lucumr.pocoo.org/2013/5/21/porting-to-python-3-redux/#metaclass-syntax-changes
+
+    class metaclass(meta):
+        __call__ = type.__call__
+        __init__ = type.__init__
+        def __new__(cls, name, this_bases, d):
+            if this_bases is None:
+                return type.__new__(cls, name, (), d)
+            return meta(name, bases, d)
+    return metaclass('temporary_class', None, {})
+
+
 class __base__(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -62,7 +75,7 @@ def _make_init_func(required, defaults, everything,
     return global_namespace, local_namespace
 
 
-def class_sealer(required, defaults, everything):
+def class_sealer(required, defaults, everything, __base__=__base__):
     """
     This sealer make a normal container class. It's mutable and supports arguments with default values.
     """
@@ -118,6 +131,21 @@ def class_sealer(required, defaults, everything):
             )
     global_namespace['FieldsBase'] = FieldsBase
     return FieldsBase
+
+
+def slots_class_sealer(required, defaults, everything):
+    class __slots_meta__(type):
+        def __new__(mcs, name, bases, namespace):
+            namespace["__slots__"] = everything
+            return type.__new__(mcs, name, bases, namespace)
+
+    class __slots_base__(_with_metaclass(__slots_meta__, object)):
+        __slots__ = ()
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+    return class_sealer(required, defaults, everything, __base__=__slots_base__)
 
 
 def tuple_sealer(required, defaults, everything):
@@ -287,4 +315,5 @@ class Namespace(object):
 
 
 Fields = Factory()
+SlotsFields = Factory(sealer=Callable(slots_class_sealer))
 Tuple = Factory(sealer=Callable(tuple_sealer))

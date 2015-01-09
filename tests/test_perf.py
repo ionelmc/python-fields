@@ -8,6 +8,7 @@ from characteristic import attributes
 
 from fields import __base__
 from fields import Fields
+from fields import SlotsFields
 from fields import Tuple
 
 
@@ -17,6 +18,10 @@ class characteristic_class(object):
 
 
 class fields_class(Fields.a.b.c["abc"]):
+    pass
+
+
+class slots_class(SlotsFields.a.b.c["abc"]):
     pass
 
 
@@ -49,6 +54,10 @@ def test_characteristic(benchmark):
 
 def test_fields(benchmark):
     assert benchmark(partial(fields_class, a=1, b=2, c=1))
+
+
+def test_slots_fields(benchmark):
+    assert benchmark(partial(slots_class, a=1, b=2, c=1))
 
 
 def test_super_dumb(benchmark):
