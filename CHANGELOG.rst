@@ -2,14 +2,10 @@
 Changelog
 =========
 
-2.2.0 (2015-01-09)
+2.1.0 (2015-01-09)
 ------------------
 
 * Add ``SlotsFields`` (same as ``Fields`` but automatically adds ``__slots__`` for memory efficiency on CPython).
-
-2.1.0 (2014-12-20)
-------------------
-
 * Add support for default argument to Tuple.
 
 2.0.0 (2014-10-16)
