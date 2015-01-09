@@ -9,6 +9,7 @@ env:
     - TOXENV={{ env }}{% if config.cover %},coveralls{% endif %}
 
 {% endfor %}
+sudo: false
 before_install:
   - python --version
   - virtualenv --version
@@ -23,4 +24,3 @@ notifications:
   email:
     on_success: never
     on_failure: always
-
