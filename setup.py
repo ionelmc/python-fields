@@ -20,7 +20,7 @@ def read(*names, **kwargs):
 
 setup(
     name="fields",
-    version="2.1.1",
+    version="2.2.0",
     license="BSD",
     description="A totally different take on container boilerplate.",
     long_description="%s\n%s" % (read("README.rst"), re.sub(":obj:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst"))),

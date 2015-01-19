@@ -18,7 +18,7 @@ try:
 except ImportError:
     from .py2ordereddict import OrderedDict
 
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 
 PY3 = sys.version_info[0] == 3
 MISSING = object()
