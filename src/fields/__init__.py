@@ -76,13 +76,13 @@ def _make_init_func(required, defaults, everything,
     return global_namespace, local_namespace
 
 
-def class_sealer(required, defaults, everything, __base__=__base__):
+def class_sealer(required, defaults, everything, base=__base__, make_init_func=_make_init_func):
     """
     This sealer make a normal container class. It's mutable and supports arguments with default values.
     """
-    global_namespace, local_namespace = _make_init_func(required, defaults, everything)
+    global_namespace, local_namespace = make_init_func(required, defaults, everything)
 
-    class FieldsBase(__base__):
+    class FieldsBase(base):
         __init__ = local_namespace['__init__']
 
         def __eq__(self, other):
@@ -146,7 +146,7 @@ def slots_class_sealer(required, defaults, everything):
         def __init__(self, *args, **kwargs):
             pass
 
-    return class_sealer(required, defaults, everything, __base__=__slots_base__)
+    return class_sealer(required, defaults, everything, base=__slots_base__)
 
 
 def tuple_sealer(required, defaults, everything):
