@@ -60,8 +60,5 @@ setup(
         # eg: "rst": ["docutils>=0.11"],
     },
     entry_points={
-        "console_scripts": [
-            "fields = fields.__main__:main"
-        ]
     },
 )
