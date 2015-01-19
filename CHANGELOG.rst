@@ -3,7 +3,7 @@ Changelog
 =========
 
 2.2.0 (2015-01-19)
------------------
+------------------
 
 * Add ``make_init_func`` as an optional argument to ``class_sealer``. Rename the ``__base__`` option to just ``base``.
 
