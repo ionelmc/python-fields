@@ -2,6 +2,11 @@
 Changelog
 =========
 
+2.3.0 (2015-01-20)
+------------------
+
+* Allow overriding ``__slots__`` in ``SlotsFields`` subclasses.
+
 2.2.0 (2015-01-19)
 ------------------
 

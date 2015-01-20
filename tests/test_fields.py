@@ -64,6 +64,24 @@ def test_slots_class_has_slots():
     raises(AttributeError, setattr, i, "bogus", 1)
     raises(AttributeError, getattr, i, "bogus")
 
+
+def test_slots_class_customizable_slots():
+    class Slots(SlotsFields.a.b[1]):
+        __slots__ = ["a", "b", "foo", "bar"]
+
+    i = Slots(0)
+    i.a = 1
+    assert Slots.__slots__ == ["a", "b", "foo", "bar"]
+    assert i.a == 1
+    assert not hasattr(i, "__dict__")
+    i.foo = 2
+    assert i.foo == 2
+    i.bar = 3
+    assert i.bar == 3
+    raises(AttributeError, setattr, i, "bogus", 1)
+    raises(AttributeError, getattr, i, "bogus")
+
+
 def test_defaults_on_tuples(impl):
     class Ok(impl.a.b['def']):
         pass

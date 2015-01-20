@@ -137,7 +137,8 @@ def class_sealer(required, defaults, everything, base=__base__, make_init_func=_
 def slots_class_sealer(required, defaults, everything):
     class __slots_meta__(type):
         def __new__(mcs, name, bases, namespace):
-            namespace["__slots__"] = everything
+            if "__slots__" not in namespace:
+                namespace["__slots__"] = everything
             return type.__new__(mcs, name, bases, namespace)
 
     class __slots_base__(_with_metaclass(__slots_meta__, object)):
