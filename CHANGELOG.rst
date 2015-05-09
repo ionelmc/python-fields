@@ -2,15 +2,26 @@
 Changelog
 =========
 
+2.4.0 (???)
+------------------
+
+* Similarly to ``fields.Fields``, added three new bases:
+
+  * ``fields.BareFields`` (implements ``__init__``).
+  * ``fields.ComparableMixin`` (implements ``__eq__``, ``__ne__``, ``__lt__``, ``__gt__``, ``__le__``, ``__ge__`` and ``__hash__``).
+  * ``fields.PrintableMixin`` (implements ``__repr__``).
+
+* Improved reference section in the docs.
+
 2.3.0 (2015-01-20)
 ------------------
 
-* Allow overriding ``__slots__`` in ``SlotsFields`` subclasses.
+* Allowed overriding ``__slots__`` in ``SlotsFields`` subclasses.
 
 2.2.0 (2015-01-19)
 ------------------
 
-* Add ``make_init_func`` as an optional argument to ``class_sealer``. Rename the ``__base__`` option to just ``base``.
+* Added ``make_init_func`` as an optional argument to ``class_sealer``. Rename the ``__base__`` option to just ``base``.
 
 2.1.1 (2015-01-19)
 ------------------
@@ -20,14 +31,14 @@ Changelog
 2.1.0 (2015-01-09)
 ------------------
 
-* Add ``SlotsFields`` (same as ``Fields`` but automatically adds ``__slots__`` for memory efficiency on CPython).
-* Add support for default argument to Tuple.
+* Added ``SlotsFields`` (same as ``Fields`` but automatically adds ``__slots__`` for memory efficiency on CPython).
+* Added support for default argument to Tuple.
 
 2.0.0 (2014-10-16)
 ------------------
 
-* Make the __init__ in the FieldsBase way faster (used for ``fields.Fields``).
-* Move ``RegexValidate`` in ``fields.extras``.
+* Made the __init__ in the FieldsBase way faster (used for ``fields.Fields``).
+* Moved ``RegexValidate`` in ``fields.extras``.
 
 1.0.0 (2014-10-05)
 ------------------
@@ -47,7 +58,7 @@ Changelog
 0.3.0 (2014-07-19)
 ------------------
 
-* Corrected string repr
+* Corrected string repr.
 
 0.2.0 (2014-06-28)
 ------------------
@@ -57,4 +68,4 @@ Changelog
 0.1.0 (2014-06-27)
 ------------------
 
-* Alpha
+* Alpha release.

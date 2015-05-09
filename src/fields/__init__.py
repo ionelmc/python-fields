@@ -76,65 +76,78 @@ def _make_init_func(required, defaults, everything,
     return global_namespace, local_namespace
 
 
-def class_sealer(required, defaults, everything, base=__base__, make_init_func=_make_init_func):
+def class_sealer(required, defaults, everything,
+                 base=__base__, make_init_func=_make_init_func,
+                 initializer=True, comparable=True, printable=True):
     """
-    This sealer make a normal container class. It's mutable and supports arguments with default values.
+    This sealer makes a normal container class. It's mutable and supports arguments with default values.
     """
-    global_namespace, local_namespace = make_init_func(required, defaults, everything)
+    if initializer:
+        global_namespace, local_namespace = make_init_func(required, defaults, everything)
 
     class FieldsBase(base):
-        __init__ = local_namespace['__init__']
+        if initializer:
+            __init__ = local_namespace['__init__']
 
-        def __eq__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in everything) == tuple(getattr(other, a) for a in everything)
-            else:
-                return NotImplemented
+        if comparable:
+            def __eq__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(getattr(self, a) for a in everything) == tuple(getattr(other, a) for a in everything)
+                else:
+                    return NotImplemented
 
-        def __ne__(self, other):
-            result = self.__eq__(other)
-            if result is NotImplemented:
-                return NotImplemented
-            else:
-                return not result
+            def __ne__(self, other):
+                result = self.__eq__(other)
+                if result is NotImplemented:
+                    return NotImplemented
+                else:
+                    return not result
 
-        def __lt__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in everything) < tuple(getattr(other, a) for a in everything)
-            else:
-                return NotImplemented
+            def __lt__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(getattr(self, a) for a in everything) < tuple(getattr(other, a) for a in everything)
+                else:
+                    return NotImplemented
 
-        def __le__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in everything) <= tuple(getattr(other, a) for a in everything)
-            else:
-                return NotImplemented
+            def __le__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(getattr(self, a) for a in everything) <= tuple(getattr(other, a) for a in everything)
+                else:
+                    return NotImplemented
 
-        def __gt__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in everything) > tuple(getattr(other, a) for a in everything)
-            else:
-                return NotImplemented
+            def __gt__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(getattr(self, a) for a in everything) > tuple(getattr(other, a) for a in everything)
+                else:
+                    return NotImplemented
 
-        def __ge__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(getattr(self, a) for a in everything) >= tuple(getattr(other, a) for a in everything)
-            else:
-                return NotImplemented
+            def __ge__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(getattr(self, a) for a in everything) >= tuple(getattr(other, a) for a in everything)
+                else:
+                    return NotImplemented
 
-        def __hash__(self):
-            return hash(tuple(getattr(self, a) for a in everything))
+            def __hash__(self):
+                return hash(tuple(getattr(self, a) for a in everything))
 
-        def __repr__(self):
-            return "{0}({1})".format(
-                self.__class__.__name__,
-                ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
-            )
-    global_namespace['FieldsBase'] = FieldsBase
+        if printable:
+            def __repr__(self):
+                return "{0}({1})".format(
+                    self.__class__.__name__,
+                    ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
+                )
+
+    if initializer:
+        global_namespace['FieldsBase'] = FieldsBase
     return FieldsBase
 
 
 def slots_class_sealer(required, defaults, everything):
+    """
+    This sealer makes a container class that uses ``__slots__`` (it uses :func:`class_sealer` internally).
+
+    The resulting class has a metaclass that forcibly sets ``__slots__`` on subclasses.
+    """
     class __slots_meta__(type):
         def __new__(mcs, name, bases, namespace):
             if "__slots__" not in namespace:
@@ -187,15 +200,16 @@ class Callable(object):
     When you add a function in the namespace of a class it will be bound (become a method) when you try to access it.
     This class prevents that.
     """
-    def __init__(self, func):
+    def __init__(self, func, **kwargs):
         self.func = func
+        self.kwargs = kwargs
 
     @property
     def __name__(self):
         return self.func.__name__
 
     def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        return self.func(*args, **dict(self.kwargs, **kwargs))
 
 
 class Factory(type):
@@ -311,8 +325,8 @@ class Namespace(object):
 
     def __repr__(self):
         keys = sorted(self.__dict__)
-        items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
-        return "{}({})".format(type(self).__name__, ", ".join(items))
+        items = ("{0}={1!r}".format(k, self.__dict__[k]) for k in keys)
+        return "{0}({1})".format(type(self).__name__, ", ".join(items))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -320,4 +334,7 @@ class Namespace(object):
 
 Fields = Factory()
 SlotsFields = Factory(sealer=Callable(slots_class_sealer))
+BareFields = Factory(sealer=Callable(class_sealer, comparable=False, printable=False))
+PrintableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, comparable=False))
+ComparableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, printable=False))
 Tuple = Factory(sealer=Callable(tuple_sealer))

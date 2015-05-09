@@ -11,7 +11,10 @@ from itertools import chain
 from pytest import fixture
 from pytest import raises
 
+from fields import BareFields
+from fields import ComparableMixin
 from fields import Fields
+from fields import PrintableMixin
 from fields import SlotsFields
 from fields import Tuple
 from fields.extras import RegexValidate
@@ -99,6 +102,26 @@ def test_required_after_defaults(impl):
 
 def test_extra_args(impl):
     raises(TypeError, impl.a.b, 1, 2, 3)
+
+
+def test_comparable():
+    class C(ComparableMixin.a):
+        pass
+
+    raises(TypeError, C, 1, 2, 3)
+
+    class D(BareFields.a.b.c, ComparableMixin.a):
+        pass
+
+    assert D(1, 2, 3) == D(1, 3, 4)
+    assert D(1, 2, 3) != D(2, 2, 3)
+
+
+def test_printable():
+    class D(BareFields.a.b.c, PrintableMixin.a.b):
+        pass
+
+    assert str(D(1, 2, 3)) == "D(a=1, b=2)"
 
 
 def test_extra_args_2(impl):
