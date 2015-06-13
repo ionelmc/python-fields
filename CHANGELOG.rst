@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.4.0 (???)
+2.4.0 (2015-06-13)
 ------------------
 
 * Similarly to ``fields.Fields``, added three new bases:
