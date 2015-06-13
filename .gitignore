@@ -50,5 +50,6 @@ docs/_build
 .*.sw[po]
 .build
 .ve
+.env
 .bootstrap
 *.bak
