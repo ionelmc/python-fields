@@ -12,6 +12,7 @@ Changelog
   * ``fields.PrintableMixin`` (implements ``__repr__``).
 
 * Improved reference section in the docs.
+* Added ``fields.ConvertibleFields`` and ``fields.ConvertibleMixin``. They have two convenience properties: ``as_dict`` and `as_tuple``.
 
 2.3.0 (2015-01-20)
 ------------------

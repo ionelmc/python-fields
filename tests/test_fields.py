@@ -13,6 +13,8 @@ from pytest import raises
 
 from fields import BareFields
 from fields import ComparableMixin
+from fields import ConvertibleFields
+from fields import ConvertibleMixin
 from fields import Fields
 from fields import PrintableMixin
 from fields import SlotsFields
@@ -498,3 +500,17 @@ def test_init_too_many_positional(impl):
     class MyContainer(impl.a.b[2].c[3]):
         pass
     raises(TypeError, MyContainer, 0, 1, 2, 3)
+
+
+def test_convertible():
+    class TestContainer(ConvertibleFields.a.b):
+        pass
+
+    assert TestContainer(1, 2).as_dict == dict(a=1, b=2)
+
+
+def test_convertible_mixin():
+    class TestContainer(BareFields.a.b.c, ConvertibleMixin.a.b):
+        pass
+
+    assert TestContainer(1, 2, 3).as_tuple == (1, 2)

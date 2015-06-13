@@ -78,7 +78,7 @@ def _make_init_func(required, defaults, everything,
 
 def class_sealer(required, defaults, everything,
                  base=__base__, make_init_func=_make_init_func,
-                 initializer=True, comparable=True, printable=True):
+                 initializer=True, comparable=True, printable=True, convertible=False):
     """
     This sealer makes a normal container class. It's mutable and supports arguments with default values.
     """
@@ -134,8 +134,16 @@ def class_sealer(required, defaults, everything,
             def __repr__(self):
                 return "{0}({1})".format(
                     self.__class__.__name__,
-                    ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
+                    ", ".join("{0}={1}".format(attr, repr(getattr(self, attr))) for attr in everything)
                 )
+        if convertible:
+            @property
+            def as_dict(self):
+                return dict((attr, getattr(self, attr)) for attr in everything)
+
+            @property
+            def as_tuple(self):
+                return tuple(getattr(self, attr) for attr in everything)
 
     if initializer:
         global_namespace['FieldsBase'] = FieldsBase
@@ -333,8 +341,14 @@ class Namespace(object):
 
 
 Fields = Factory()
+ConvertibleFields = Factory(sealer=Callable(class_sealer, convertible=True))
 SlotsFields = Factory(sealer=Callable(slots_class_sealer))
 BareFields = Factory(sealer=Callable(class_sealer, comparable=False, printable=False))
+
+Tuple = Factory(sealer=Callable(tuple_sealer))
+
 PrintableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, comparable=False))
 ComparableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, printable=False))
-Tuple = Factory(sealer=Callable(tuple_sealer))
+ConvertibleMixin = Factory(sealer=Callable(
+    class_sealer, initializer=False, base=object, printable=False, comparable=False, convertible=True
+))
