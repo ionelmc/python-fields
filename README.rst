@@ -72,24 +72,42 @@ Usage & examples
 
 A class that has 2 attributes, ``a`` and ``b``:
 
-.. code:: python
+.. code:: pycon
 
     >>> from fields import Fields
-    >>> class Pair(Fields.a.b):
+    >>> class Pizza(Fields.name.size):
     ...     pass
     ...
-    >>> p = Pair(1, 2)
-    >>> p.a
-    1
-    >>> p.b
-    2
-    >>> Pair(a=1, b=2)
-    Pair(a=1, b=2)
+    >>> p = Pizza("Pepperoni", "large")
+    >>> p
+    Pizza(name='Pepperoni', size='large')
+    >>> p.size
+    'large'
+    >>> p.name
+    'Pepperoni'
+
+You can also use keyword arguments:
+
+.. code:: pycon
+
+    >>> Pizza(size="large", name="Pepperoni")
+    Pizza(name='Pepperoni', size='large')
+
+You can have as many attributes as you want:
+
+.. code:: pycon
+
+    >>> class Pizza(Fields.name.ingredients.crust.size):
+    ...     pass
+    ...
+    >>> Pizza("Funghi", ["mushrooms", "mozarella"], "thin", "large")
+    Pizza(name='Funghi', ingredients=['mushrooms', 'mozarella'], crust='thin', size='large')
+
 
 A class that has one required attribute ``value`` and two attributes (``left`` and ``right``) with default value
 ``None``:
 
-.. code:: python
+.. code:: pycon
 
     >>> class Node(Fields.value.left[None].right[None]):
     ...     pass
@@ -99,6 +117,12 @@ A class that has one required attribute ``value`` and two attributes (``left`` a
     >>> Node(1, right=Node(2))
     Node(value=1, left=None, right=Node(value=2, left=None, right=None))
 
+You can also use it *inline*:
+
+.. code:: pycon
+
+    >>> Fields.name.size("Pepperoni", "large")
+    FieldsBase(name='Pepperoni', size='large')
 
 Want tuples?
 ------------
@@ -111,6 +135,8 @@ An alternative to ``namedtuple``:
     >>> class Pair(Tuple.a.b):
     ...     pass
     ...
+    >>> issubclass(Pair, tuple)
+    True
     >>> p = Pair(1, 2)
     >>> p.a
     1
@@ -123,6 +149,25 @@ An alternative to ``namedtuple``:
     1
     >>> b
     2
+
+Tuples are *fast*!
+
+::
+
+    benchmark: 9 tests, min 5 rounds (of min 25.00us), 1.00s max time, timer: time.perf_counter
+
+    Name (time in us)                 Min        Max     Mean   StdDev  Rounds  Iterations
+    --------------------------------------------------------------------------------------
+    test_characteristic            6.0100  1218.4800  11.7102  34.3158   15899          10
+    test_fields                    6.8000  1850.5250   9.8448  33.8487    5535           4
+    test_slots_fields              6.3500   721.0300   8.6120  14.8090   15198          10
+    test_super_dumb                7.0111  1289.6667  11.6881  31.6012   15244           9
+    test_dumb                      3.7556   673.8444   5.8010  15.0514   14246          18
+    test_tuple                     3.1750   478.7750   5.1974   9.1878   14642          12
+    test_namedtuple                3.2778   538.1111   5.0403   9.9177   14105           9
+    test_attrs_decorated_class     4.2062   540.5125   5.3618  11.6708   14266          16
+    test_attrs_class               3.7889   316.1056   4.7731   6.0656   14026          18
+    --------------------------------------------------------------------------------------
 
 Documentation
 =============
@@ -140,7 +185,7 @@ FAQ
 ===
 
 Why should I use this?
------------------------
+----------------------
 
 It's less to type, why have quotes around when the names need to be valid symbols anyway. In fact, this is one of the
 shortest forms possible to specify a container with fields.
@@ -156,10 +201,12 @@ syntax use. For example, if we have ``class Person(Fields.first_name.last_name.h
 be clear we're talking about a *Person* object with *first_name*, *last_name*, *height* and *width* fields: the words
 have clear meaning.
 
-Again, you should not name your varibles as `f1`, `f2` or any other non-semantic symbols anyway.
+Again, you should not name your variables as `f1`, `f2` or any other non-semantic symbols anyway.
 
 Semantics precede syntax: it's like looking at a cake resembling a dog, you won't expect the cake to bark and run
 around.
+
+
 
 Is this stable? Is it tested?
 -------------------------------
@@ -242,6 +289,34 @@ Just like a normal class, works as expected:
     >>> MyContainer(1, 2)
     MyContainer(field1=1, field2=2)
 
+Why not ``attrs``?
+------------------
+
+Now this is a very difficult question.
+
+Consider this typical use-case::
+
+.. sourcecode:: pycon
+
+    >>> import attr
+    >>> @attr.s
+    ... class Point(object):
+    ...     x = attr.ib()
+    ...     y = attr.ib()
+
+Worth noting:
+
+* attrs_ is faster because it doesn't allow your class to be
+  used as a mixin (it doesn't do any ``super(cls, self).__init__(...)`` for you).
+* the typical use-case doesn't allow you to have a custom ``__init__``. If you define a custom
+  ``__init__``, it will get overridden by the one attrs_ generates.
+* It works better with IDEs and source code analysis tools because of the
+  attributes defined on the class.
+
+All in all, attrs_ is a fast and minimal container library with no support for
+subclasses. Definitely worth considering.
+
+.. _attrs: <https://pypi.python.org/pypi/attrs
 
 Won't this confuse ``pylint``?
 ------------------------------
