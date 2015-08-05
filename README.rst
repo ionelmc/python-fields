@@ -2,8 +2,8 @@
         python-fields
 ===============================
 
-| |docs| |travis| |appveyor| |coveralls| |landscape| |scrutinizer|
-| |version| |downloads| |wheel| |supported-versions| |supported-implementations|
+| |docs| |travis| |appveyor| |coveralls|
+| |version| |downloads|
 
 .. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
     :target: https://readthedocs.org/projects/python-fields
