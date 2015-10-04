@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Komodo Project File - DO NOT EDIT -->
-<project id="48c15131-393a-4c26-b0e7-119c5be2cebf" kpf_version="5" name="python-fields.komodoproject">
-<preference-set idref="48c15131-393a-4c26-b0e7-119c5be2cebf" id="project" preftype="project">
-  <string relative="path" id="import_dirname"></string>
-  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;.git;.hg;.bzr;*%25*;tmp*.html;.DS_Store;*.swp;*.kpf;*.komodoproject;.komodotools;__pycache__;.tox;build;dist</string>
-</preference-set>
-</project>
