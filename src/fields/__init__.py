@@ -235,6 +235,8 @@ class Factory(type):
     __concrete = None
 
     def __getattr__(cls, name):
+        if name.startswith("__") and name.endswith("__"):
+            return type.__getattribute__(cls, name)
         if name in cls.__required:
             raise TypeError("Field %r is already specified as required." % name)
         if name in cls.__defaults:

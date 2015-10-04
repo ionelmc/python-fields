@@ -2,6 +2,11 @@
 Changelog
 =========
 
+3.0.0 (2015-10-04)
+------------------
+
+* Disallowed creating containers with fields with "dunder" names. E.g.: ``class Foo(Fields.__foo__):`` is disallowed.
+
 2.4.0 (2015-06-13)
 ------------------
 
