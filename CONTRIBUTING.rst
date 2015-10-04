@@ -17,8 +17,8 @@ When `reporting a bug <https://github.com/ionelmc/python-fields/issues>`_ please
 Documentation improvements
 ==========================
 
-python-fields could always use more documentation, whether as part of the
-official python-fields docs, in docstrings, or even on the web in blog posts,
+Fields could always use more documentation, whether as part of the
+official Fields docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Feature requests and feedback

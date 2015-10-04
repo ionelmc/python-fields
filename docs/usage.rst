@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use python-fields in a project::
+To use Fields in a project::
 
 	import fields

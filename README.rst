@@ -1,52 +1,76 @@
-===============================
-        python-fields
-===============================
+======
+Fields
+======
 
-| |docs| |travis| |appveyor| |coveralls|
-| |version| |downloads|
+.. list-table::
+    :stub-columns: 1
+
+    * - docs
+      - |docs|
+    * - tests
+      - | |travis| |appveyor| |requires|
+        | |coveralls| |codecov|
+        | |landscape| |scrutinizer| |codacy| |codeclimate|
+    * - package
+      - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
 
 .. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
     :target: https://readthedocs.org/projects/python-fields
     :alt: Documentation Status
 
-.. |travis| image:: http://img.shields.io/travis/ionelmc/python-fields/master.png?style=flat
+.. |travis| image:: https://travis-ci.org/ionelmc/python-fields.svg?branch=master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/ionelmc/python-fields
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/python-fields?branch=master
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/python-fields?branch=master&svg=true
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/ionelmc/python-fields
 
-.. |coveralls| image:: http://img.shields.io/coveralls/ionelmc/python-fields/master.png?style=flat
+.. |requires| image:: https://requires.io/github/ionelmc/python-fields/requirements.svg?branch=master
+    :alt: Requirements Status
+    :target: https://requires.io/github/ionelmc/python-fields/requirements/?branch=master
+
+.. |coveralls| image:: https://coveralls.io/repos/ionelmc/python-fields/badge.svg?branch=master&service=github
     :alt: Coverage Status
     :target: https://coveralls.io/r/ionelmc/python-fields
+
+.. |codecov| image:: https://codecov.io/github/ionelmc/python-fields/coverage.svg?branch=master
+    :alt: Coverage Status
+    :target: https://codecov.io/github/ionelmc/python-fields
 
 .. |landscape| image:: https://landscape.io/github/ionelmc/python-fields/master/landscape.svg?style=flat
     :target: https://landscape.io/github/ionelmc/python-fields/master
     :alt: Code Quality Status
 
-.. |version| image:: http://img.shields.io/pypi/v/fields.png?style=flat
+.. |codacy| image:: https://img.shields.io/codacy/REPLACE_WITH_PROJECT_ID.svg?style=flat
+    :target: https://www.codacy.com/app/ionelmc/python-fields
+    :alt: Codacy Code Quality Status
+
+.. |codeclimate| image:: https://codeclimate.com/github/ionelmc/python-fields/badges/gpa.svg
+   :target: https://codeclimate.com/github/ionelmc/python-fields
+   :alt: CodeClimate Quality Status
+.. |version| image:: https://img.shields.io/pypi/v/fields.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/fields
 
-.. |downloads| image:: http://img.shields.io/pypi/dm/fields.png?style=flat
+.. |downloads| image:: https://img.shields.io/pypi/dm/fields.svg?style=flat
     :alt: PyPI Package monthly downloads
     :target: https://pypi.python.org/pypi/fields
 
-.. |wheel| image:: https://pypip.in/wheel/fields/badge.png?style=flat
+.. |wheel| image:: https://img.shields.io/pypi/wheel/fields.svg?style=flat
     :alt: PyPI Wheel
     :target: https://pypi.python.org/pypi/fields
 
-.. |supported-versions| image:: https://pypip.in/py_versions/fields/badge.png?style=flat
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/fields.svg?style=flat
     :alt: Supported versions
     :target: https://pypi.python.org/pypi/fields
 
-.. |supported-implementations| image:: https://pypip.in/implementation/fields/badge.png?style=flat
-    :alt: Supported imlementations
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/fields.svg?style=flat
+    :alt: Supported implementations
     :target: https://pypi.python.org/pypi/fields
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.png?style=flat
-    :alt: Scrtinizer Status
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.svg?style=flat
+    :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/ionelmc/python-fields/
 
 Container class boilerplate killer.

@@ -1,6 +1,5 @@
 fields
-=============================
-
+======
 
 .. automodule:: fields
     :members:
