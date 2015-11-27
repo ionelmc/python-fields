@@ -347,3 +347,53 @@ Won't this confuse ``pylint``?
 
 Normaly it would, but there's a plugin that makes pylint understand it, just like any other class:
 `pylint-fields <https://github.com/ionelmc/pylint-fields>`_.
+
+Testimonials
+============
+
+..
+
+    Diabolical. Can't be unseen.
+
+    -- David Beazley
+
+..
+
+    I think that's the saddest a single line of python has ever made me.
+
+    -- Someone on IRC (#python)
+
+..
+
+    Don't speak around saying that I like it.
+
+    -- A PyPy contributor
+
+..
+
+    Are Python programmers that lazy?
+
+    -- Some Java developer
+
+..
+
+    Is it some Ruby thing?
+
+    -- Unsuspecting victim at EuroPython 2015
+
+..
+
+    WHAT?!?!
+
+    -- Unsuspecting victim at EuroPython 2015
+
+.. 
+
+    I don't think it should work ...
+
+    -- Unsuspecting victim at EuroPython 2015
+
+Apologies
+=========
+
+I tried my best at `EuroPython <https://youtu.be/nofEnPqj0cE?t=2554>`_ ...
