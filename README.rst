@@ -94,7 +94,7 @@ Installation
 Usage & examples
 ================
 
-A class that has 2 attributes, ``a`` and ``b``:
+A class that has 2 attributes, ``name`` and ``size``:
 
 .. code:: pycon
 
