@@ -355,7 +355,7 @@ Testimonials
 
     Diabolical. Can't be unseen.
 
-    -- David Beazley
+    -- `David Beazley <https://twitter.com/dabeaz/status/670237225104355328>`_
 
 ..
 
@@ -392,6 +392,12 @@ Testimonials
     I don't think it should work ...
 
     -- Unsuspecting victim at EuroPython 2015
+
+..
+
+    I'm going to use this in my next project. You're a terrible person
+
+    -- `Isaac Dickinson <https://github.com/sundwarf>`_
 
 Apologies
 =========
