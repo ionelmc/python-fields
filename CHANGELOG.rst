@@ -7,6 +7,7 @@ Changelog
 
 * Added ``__all__`` and ``factory`` conveniences. Removed :obj:`fields.Factory` from the public API since it need some special
   care with it's use (it's a damn metaclass after all).
+* Added ``make_init_func`` into public API for advanced uses (combine with ``factory`` and ``class_sealer``).
 
 3.0.0 (2015-10-04)
 ------------------

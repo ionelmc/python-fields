@@ -1,20 +1,20 @@
 from collections import namedtuple
 from functools import partial
 
-from pytest import mark
-
+from attr import ib as badly_named_field
+from attr import s as badly_named_class_decorator
+from attr import Factory
+from attr import make_class
 from characteristic import Attribute
 from characteristic import attributes
 
-from attr import Factory
-from attr import make_class
-from attr import s as badly_named_class_decorator
-from attr import ib as badly_named_field
-
-from fields import __base__
 from fields import Fields
 from fields import SlotsFields
 from fields import Tuple
+from fields import __base__
+from fields import class_sealer
+from fields import factory
+from fields import make_init_func
 
 
 @attributes(["a", "b", Attribute("c", default_value="abc")])
@@ -27,6 +27,16 @@ class attrs_decorated_class(object):
     a = badly_named_field()
     b = badly_named_field()
     c = badly_named_field(default=Factory("abc"))
+
+
+class fields_nosuper_class(
+    factory(
+        class_sealer,
+        base=object,
+        make_init_func=partial(make_init_func, super_call=False)
+    ).a.b.c["abc"]
+):
+    pass
 
 
 class fields_class(Fields.a.b.c["abc"]):
@@ -70,6 +80,10 @@ def test_fields(benchmark):
     assert benchmark(partial(fields_class, a=1, b=2, c=1))
 
 
+def test_fields_nosuper(benchmark):
+    assert benchmark(partial(fields_nosuper_class, a=1, b=2, c=1))
+
+
 def test_slots_fields(benchmark):
     assert benchmark(partial(slots_class, a=1, b=2, c=1))
 
@@ -92,7 +106,7 @@ def test_namedtuple(benchmark):
 
 def test_attrs_decorated_class(benchmark):
     assert benchmark(partial(attrs_decorated_class, a=1, b=2, c=1))
-    
-    
+
+
 def test_attrs_class(benchmark):
     assert benchmark(partial(attrs_class, a=1, b=2, c=1))

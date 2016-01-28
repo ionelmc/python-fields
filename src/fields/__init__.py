@@ -30,6 +30,7 @@ __all__ = (
     'Tuple',
     # advanced stuff
     'factory',
+    'make_init_func',
     'class_sealer',
     'slots_class_sealer',
     'tuple_sealer',
@@ -59,30 +60,37 @@ class __base__(object):
         pass
 
 
-def _make_init_func(required, defaults, everything,
-                    header='def __init__(self',
-                    call_start='super(FieldsBase, self).__init__(',
-                    call_end=')\n',
-                    kw=True, attrs=True):
+def make_init_func(fields, defaults,
+                   header='def __init__(self',
+                   super_call_start='super(FieldsBase, self).__init__(',
+                   super_call_end=')\n',
+                   super_call=True,
+                   super_call_kw=True, set_attributes=True):
     parts = [header]
-    for var in everything:
+    still_positional = True
+    for var in fields:
         if var in defaults:
+            still_positional = False
             parts.append(', {0}={0}'.format(var))
-        else:
+        elif still_positional:
             parts.append(', {0}'.format(var))
+        else:
+            raise ValueError("Cannot have positional fields after fields with defaults. "
+                             "Field {0!r} is missing a default value!".format(var))
     parts.append('):\n')
-    if attrs:
-        for var in everything:
+    if set_attributes:
+        for var in fields:
             parts.append('    self.{0} = {0}\n'.format(var))
-    parts.append('    ')
-    parts.append(call_start)
-    if kw:
-        parts.append(', '.join('{0}={0}'.format(var) for var in everything))
-    else:
-        parts.append(', '.join('{0}'.format(var) for var in everything))
-    parts.append(call_end)
+    if super_call:
+        parts.append('    ')
+        parts.append(super_call_start)
+        if super_call_kw:
+            parts.append(', '.join('{0}={0}'.format(var) for var in fields))
+        else:
+            parts.append(', '.join('{0}'.format(var) for var in fields))
+        parts.append(super_call_end)
     local_namespace = dict(defaults)
-    global_namespace = dict(super=super)
+    global_namespace = dict(super=super) if super_call else {}
     code = ''.join(parts)
 
     if PY2:
@@ -93,13 +101,13 @@ def _make_init_func(required, defaults, everything,
 
 
 def class_sealer(required, defaults, everything,
-                 base=__base__, make_init_func=_make_init_func,
+                 base=__base__, make_init_func=make_init_func,
                  initializer=True, comparable=True, printable=True, convertible=False):
     """
     This sealer makes a normal container class. It's mutable and supports arguments with default values.
     """
     if initializer:
-        global_namespace, local_namespace = make_init_func(required, defaults, everything)
+        global_namespace, local_namespace = make_init_func(everything, defaults)
 
     class FieldsBase(base):
         if initializer:
@@ -191,12 +199,12 @@ def tuple_sealer(required, defaults, everything):
     """
     This sealer returns an equivalent of a ``namedtuple``.
     """
-    global_namespace, local_namespace = _make_init_func(
-        required, defaults, everything,
+    global_namespace, local_namespace = make_init_func(
+        everything, defaults,
         header='def __new__(cls',
-        call_start='return tuple.__new__(cls, (',
-        call_end='))\n',
-        kw=False, attrs=False,
+        super_call_start='return tuple.__new__(cls, (',
+        super_call_end='))\n',
+        super_call_kw=False, set_attributes=False,
     )
 
     def __getnewargs__(self):
