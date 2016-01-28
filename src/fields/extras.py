@@ -1,8 +1,8 @@
 import re
 
 from fields import __base__
-from fields import Callable
-from fields import Factory
+from fields import _SealerWrapper
+from fields import _Factory
 
 
 class ValidationError(Exception):
@@ -44,4 +44,4 @@ def regex_validation_sealer(required, defaults, everything, RegexType=type(re.co
     ))
     return klass
 
-RegexValidate = Factory(sealer=Callable(regex_validation_sealer))
+RegexValidate = _Factory(sealer=_SealerWrapper(regex_validation_sealer))

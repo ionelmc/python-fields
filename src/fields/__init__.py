@@ -3,7 +3,7 @@ How it works: the library is composed of 2 major parts:
 
 * The `sealers`. They return a class that implements a container according the given specification (list of field names
   and default values).
-* The `Factory`. A metaclass that implements attribute/item access, so you can do ``Fields.a.b.c``. On each
+* The `factory`. A metaclass that implements attribute/item access, so you can do ``Fields.a.b.c``. On each
   getattr/getitem it returns a new instance with the new state. Its ``__new__`` method takes extra arguments to store
   the contruction state and it works in two ways:
 
@@ -19,8 +19,24 @@ except ImportError:
     from .py2ordereddict import OrderedDict
 
 __version__ = "3.0.0"
-
-PY3 = sys.version_info[0] == 3
+__all__ = (
+    'BareFields',
+    'ComparableMixin',
+    'ConvertibleFields',
+    'ConvertibleMixin',
+    'Fields',
+    'PrintableMixin',
+    'SlotsFields',
+    'Tuple',
+    # advanced stuff
+    'factory',
+    'class_sealer',
+    'slots_class_sealer',
+    'tuple_sealer',
+    # convenience things
+    'Namespace'
+)
+PY2 = sys.version_info[0] == 2
 MISSING = object()
 
 
@@ -69,10 +85,10 @@ def _make_init_func(required, defaults, everything,
     global_namespace = dict(super=super)
     code = ''.join(parts)
 
-    if PY3:
-        exec(code, global_namespace, local_namespace)
-    else:
+    if PY2:
         exec("exec code in global_namespace, local_namespace")
+    else:
+        exec(code, global_namespace, local_namespace)
     return global_namespace, local_namespace
 
 
@@ -201,7 +217,7 @@ def tuple_sealer(required, defaults, everything):
     ))
 
 
-class Callable(object):
+class _SealerWrapper(object):
     """
     Primitive wrapper around a function that makes it `un-bindable`.
 
@@ -220,7 +236,7 @@ class Callable(object):
         return self.func(*args, **dict(self.kwargs, **kwargs))
 
 
-class Factory(type):
+class _Factory(type):
     """
     This class makes everything work. It a metaclass for the class that users are going to use. Each new chain
     rebuilds everything.
@@ -248,7 +264,7 @@ class Factory(type):
         if cls.__defaults and cls.__last_field is not None:
             raise TypeError("Can't add required fields after fields with defaults.")
 
-        return Factory(
+        return _Factory(
             required=cls.__full_required,
             defaults=cls.__defaults,
             last_field=name,
@@ -261,17 +277,17 @@ class Factory(type):
 
         new_defaults = OrderedDict(cls.__defaults)
         new_defaults[cls.__last_field] = default
-        return Factory(
+        return _Factory(
             required=cls.__required,
             defaults=new_defaults,
             sealer=cls.__sealer,
         )
 
     def __new__(mcs, name="__blank__", bases=(), namespace=None, last_field=None, required=(), defaults=(),
-                sealer=Callable(class_sealer)):
+                sealer=_SealerWrapper(class_sealer)):
 
         if not bases:
-            assert isinstance(sealer, Callable)
+            assert isinstance(sealer, _SealerWrapper)
 
             full_required = tuple(required)
             if last_field is not None:
@@ -279,7 +295,7 @@ class Factory(type):
             all_fields = list(chain(full_required, defaults))
 
             return type.__new__(
-                Factory,
+                _Factory,
                 "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
                 if all_fields else "Fields<%s>" % sealer.__name__,
                 bases,
@@ -296,7 +312,7 @@ class Factory(type):
             for pos, names in enumerate(zip(*[
                 k.__all_fields
                 for k in bases
-                if isinstance(k, Factory)
+                if isinstance(k, _Factory)
             ])):
                 if names:
                     if len(set(names)) != 1:
@@ -306,7 +322,7 @@ class Factory(type):
                         ))
 
             return type(name, tuple(
-                ~k if isinstance(k, Factory) else k for k in bases
+                    ~k if isinstance(k, _Factory) else k for k in bases
             ), {} if namespace is None else namespace)
 
     def __init__(cls, *args, **kwargs):
@@ -342,15 +358,57 @@ class Namespace(object):
         return self.__dict__ == other.__dict__
 
 
-Fields = Factory()
-ConvertibleFields = Factory(sealer=Callable(class_sealer, convertible=True))
-SlotsFields = Factory(sealer=Callable(slots_class_sealer))
-BareFields = Factory(sealer=Callable(class_sealer, comparable=False, printable=False))
+def factory(sealer, **sealer_options):
+    """
+    Create a factory that will produce a class using the given ``sealer``.
 
-Tuple = Factory(sealer=Callable(tuple_sealer))
+    Args:
+        sealer (func): A function that takes ``required, defaults, everything`` as arguments, where:
 
-PrintableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, comparable=False))
-ComparableMixin = Factory(sealer=Callable(class_sealer, initializer=False, base=object, printable=False))
-ConvertibleMixin = Factory(sealer=Callable(
+            * required (list): A list of strings
+            * defaults (dict): A dict with all the defaults
+            * everything (list): A list with all the field names in the declared order.
+        sealer_options: Optional keyword arguments passed to ``sealer``.
+    Return:
+        A class on which you can do `.field1.field2.field3...`. When it's subclassed it "seals", and whatever the
+        ``sealer`` returned for the given fields is used as the baseclass.
+
+        Example:
+
+        .. sourcecode:: pycon
+
+
+            >>> def sealer(required, defaults, everything):
+            ...     print("Creating class with:")
+            ...     print("  required = {0}".format(required))
+            ...     print("  defaults = {0}".format(defaults))
+            ...     print("  everything = {0}".format(everything))
+            ...     return object
+            ...
+            >>> Fields = factory(sealer)
+            >>> class Foo(Fields.foo.bar.lorem[1].ipsum[2]):
+            ...     pass
+            ...
+            Creating class with:
+              required = ('foo', 'bar')
+              defaults = OrderedDict([('lorem', 1), ('ipsum', 2)])
+              everything = ['foo', 'bar', 'lorem', 'ipsum']
+            >>> Foo
+            <class '...Foo'>
+            >>> Foo.__bases__
+            (<... 'object'>,)
+    """
+    return _Factory(sealer=_SealerWrapper(sealer, **sealer_options))
+
+Fields = _Factory()
+ConvertibleFields = factory(class_sealer, convertible=True)
+SlotsFields = factory(slots_class_sealer)
+BareFields = factory(class_sealer, comparable=False, printable=False)
+
+Tuple = factory(tuple_sealer)
+
+PrintableMixin = factory(class_sealer, initializer=False, base=object, comparable=False)
+ComparableMixin = factory(class_sealer, initializer=False, base=object, printable=False)
+ConvertibleMixin = factory(
     class_sealer, initializer=False, base=object, printable=False, comparable=False, convertible=True
-))
+)

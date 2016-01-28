@@ -2,6 +2,12 @@
 Changelog
 =========
 
+3.1.0 (2016-01-28)
+------------------
+
+* Added ``__all__`` and ``factory`` conveniences. Removed :obj:`fields.Factory` from the public API since it need some special
+  care with it's use (it's a damn metaclass after all).
+
 3.0.0 (2015-10-04)
 ------------------
 
