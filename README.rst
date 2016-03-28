@@ -371,15 +371,9 @@ Testimonials
 
 ..
 
-    Are Python programmers that lazy?
-
-    -- Some Java developer
-
-..
-
-    Is it some Ruby thing?
-
-    -- Unsuspecting victim at EuroPython 2015
+    Fields is completey bat-shit insane, but kind of cool.
+    
+    -- Someone on IRC (#python)
 
 ..
 
@@ -395,7 +389,19 @@ Testimonials
 
 ..
 
-    I'm going to use this in my next project. You're a terrible person
+    Is it some Ruby thing?
+
+    -- Unsuspecting victim at EuroPython 2015
+
+..
+
+    Are Python programmers that lazy?
+
+    -- Some Java developer
+
+..
+
+    I'm going to use this in my next project. You're a terrible person.
 
     -- `Isaac Dickinson <https://github.com/sundwarf>`_
 
