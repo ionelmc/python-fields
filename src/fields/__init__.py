@@ -107,10 +107,13 @@ def make_init_func(fields, defaults,
     parts.append('{0} = {1}\ndel {1}'.format(header_name, func_name))
     code = ''.join(parts)
 
+    filename = "<fields-init-function-%x>" % zlib.adler32(code.encode('utf8'))
+    codeobj = compile(code, filename, 'exec')
     if PY2:
-        exec("exec code in global_namespace, local_namespace")
+        exec("exec codeobj in global_namespace, local_namespace")
     else:
-        exec(code, global_namespace, local_namespace)
+        exec(codeobj, global_namespace, local_namespace)
+    linecache.cache[filename] = len(code), None, code.splitlines(), filename
     return global_namespace, local_namespace
 
 
