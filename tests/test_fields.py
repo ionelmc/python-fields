@@ -11,7 +11,7 @@ from itertools import chain
 from pytest import fixture
 from pytest import raises
 
-from fields import BareFields, make_init_func
+from fields import BareFields, make_init_func, InheritableFields
 from fields import ComparableMixin
 from fields import ConvertibleFields
 from fields import ConvertibleMixin
@@ -520,3 +520,17 @@ def test_bad_make_init_func():
     exc = raises(ValueError, make_init_func, ['a', 'b', 'c'], {'b': 1})
     assert exc.value.args == ("Cannot have positional fields after fields with defaults."
                               " Field 'c' is missing a default value!",)
+
+
+def test_multiple_inheritance():
+    class A(InheritableFields.name):
+        pass
+
+    class B(InheritableFields.age):
+        pass
+
+    class Person(A, B):
+        pass
+
+    Person(name='hans', age='43')
+    raises(TypeError, Person, name='hans', age='43', bogus='crappo')

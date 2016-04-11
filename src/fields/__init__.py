@@ -10,9 +10,13 @@ How it works: the library is composed of 2 major parts:
   * Construction phase (there are no bases). Make new instances of the `Factory` with new state.
   * Usage phase. When subclassed (there are bases) it will use the sealer to return the final class.
 """
+import linecache
 import sys
 from itertools import chain
 from operator import itemgetter
+
+import zlib
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -61,12 +65,18 @@ class __base__(object):
 
 
 def make_init_func(fields, defaults,
-                   header='def __init__(self',
-                   super_call_start='super(FieldsBase, self).__init__(',
+                   baseclass_name='FieldsBase',
+                   header_name='__init__',
+                   header_start='def {func_name}(self',
+                   header_end='):\n',
+                   super_call_start='super({baseclass_name}, self).__init__(',
                    super_call_end=')\n',
                    super_call=True,
-                   super_call_kw=True, set_attributes=True):
-    parts = [header]
+                   super_call_pass_allargs=True,
+                   super_call_pass_kwargs=True,
+                   set_attributes=True):
+    func_name = '__fields_init_for__{0}__'.format('__'.join(fields))
+    parts = [header_start.format(func_name=func_name)]
     still_positional = True
     for var in fields:
         if var in defaults:
@@ -77,20 +87,24 @@ def make_init_func(fields, defaults,
         else:
             raise ValueError("Cannot have positional fields after fields with defaults. "
                              "Field {0!r} is missing a default value!".format(var))
-    parts.append('):\n')
+    parts.append(header_end if fields else header_end.lstrip(', '))
     if set_attributes:
         for var in fields:
             parts.append('    self.{0} = {0}\n'.format(var))
     if super_call:
         parts.append('    ')
-        parts.append(super_call_start)
-        if super_call_kw:
-            parts.append(', '.join('{0}={0}'.format(var) for var in fields))
+        parts.append(super_call_start.format(baseclass_name=baseclass_name))
+        if super_call_pass_allargs:
+            if super_call_pass_kwargs:
+                parts.append(', '.join('{0}={0}'.format(var) for var in fields))
+            else:
+                parts.append(', '.join('{0}'.format(var) for var in fields))
+            parts.append(super_call_end)
         else:
-            parts.append(', '.join('{0}'.format(var) for var in fields))
-        parts.append(super_call_end)
+            parts.append(super_call_end.lstrip(', '))
     local_namespace = dict(defaults)
     global_namespace = dict(super=super) if super_call else {}
+    parts.append('{0} = {1}\ndel {1}'.format(header_name, func_name))
     code = ''.join(parts)
 
     if PY2:
@@ -100,14 +114,24 @@ def make_init_func(fields, defaults,
     return global_namespace, local_namespace
 
 
-def class_sealer(required, defaults, everything,
+def class_sealer(fields, defaults,
                  base=__base__, make_init_func=make_init_func,
-                 initializer=True, comparable=True, printable=True, convertible=False):
+                 initializer=True, comparable=True, printable=True, convertible=False, pass_kwargs=False):
     """
     This sealer makes a normal container class. It's mutable and supports arguments with default values.
     """
+    baseclass_name = 'FieldsBase_for__{0}'.format('__'.join(fields))
+    if pass_kwargs:
+        options = dict(
+            header_end=', **__fields_kwargs__):\n',
+            super_call_end=', **__fields_kwargs__)\n',
+            super_call_pass_allargs=False,
+        )
+    else:
+        options = {}
+
     if initializer:
-        global_namespace, local_namespace = make_init_func(everything, defaults)
+        global_namespace, local_namespace = make_init_func(fields, defaults, baseclass_name, **options)
 
     class FieldsBase(base):
         if initializer:
@@ -116,7 +140,7 @@ def class_sealer(required, defaults, everything,
         if comparable:
             def __eq__(self, other):
                 if isinstance(other, self.__class__):
-                    return tuple(getattr(self, a) for a in everything) == tuple(getattr(other, a) for a in everything)
+                    return tuple(getattr(self, a) for a in fields) == tuple(getattr(other, a) for a in fields)
                 else:
                     return NotImplemented
 
@@ -129,52 +153,52 @@ def class_sealer(required, defaults, everything,
 
             def __lt__(self, other):
                 if isinstance(other, self.__class__):
-                    return tuple(getattr(self, a) for a in everything) < tuple(getattr(other, a) for a in everything)
+                    return tuple(getattr(self, a) for a in fields) < tuple(getattr(other, a) for a in fields)
                 else:
                     return NotImplemented
 
             def __le__(self, other):
                 if isinstance(other, self.__class__):
-                    return tuple(getattr(self, a) for a in everything) <= tuple(getattr(other, a) for a in everything)
+                    return tuple(getattr(self, a) for a in fields) <= tuple(getattr(other, a) for a in fields)
                 else:
                     return NotImplemented
 
             def __gt__(self, other):
                 if isinstance(other, self.__class__):
-                    return tuple(getattr(self, a) for a in everything) > tuple(getattr(other, a) for a in everything)
+                    return tuple(getattr(self, a) for a in fields) > tuple(getattr(other, a) for a in fields)
                 else:
                     return NotImplemented
 
             def __ge__(self, other):
                 if isinstance(other, self.__class__):
-                    return tuple(getattr(self, a) for a in everything) >= tuple(getattr(other, a) for a in everything)
+                    return tuple(getattr(self, a) for a in fields) >= tuple(getattr(other, a) for a in fields)
                 else:
                     return NotImplemented
 
             def __hash__(self):
-                return hash(tuple(getattr(self, a) for a in everything))
+                return hash(tuple(getattr(self, a) for a in fields))
 
         if printable:
             def __repr__(self):
                 return "{0}({1})".format(
                     self.__class__.__name__,
-                    ", ".join("{0}={1}".format(attr, repr(getattr(self, attr))) for attr in everything)
+                    ", ".join("{0}={1}".format(attr, repr(getattr(self, attr))) for attr in fields)
                 )
         if convertible:
             @property
             def as_dict(self):
-                return dict((attr, getattr(self, attr)) for attr in everything)
+                return dict((attr, getattr(self, attr)) for attr in fields)
 
             @property
             def as_tuple(self):
-                return tuple(getattr(self, attr) for attr in everything)
+                return tuple(getattr(self, attr) for attr in fields)
 
     if initializer:
-        global_namespace['FieldsBase'] = FieldsBase
+        global_namespace[baseclass_name] = FieldsBase
     return FieldsBase
 
 
-def slots_class_sealer(required, defaults, everything):
+def slots_class_sealer(fields, defaults):
     """
     This sealer makes a container class that uses ``__slots__`` (it uses :func:`class_sealer` internally).
 
@@ -183,7 +207,7 @@ def slots_class_sealer(required, defaults, everything):
     class __slots_meta__(type):
         def __new__(mcs, name, bases, namespace):
             if "__slots__" not in namespace:
-                namespace["__slots__"] = everything
+                namespace["__slots__"] = fields
             return type.__new__(mcs, name, bases, namespace)
 
     class __slots_base__(_with_metaclass(__slots_meta__, object)):
@@ -192,19 +216,22 @@ def slots_class_sealer(required, defaults, everything):
         def __init__(self, *args, **kwargs):
             pass
 
-    return class_sealer(required, defaults, everything, base=__slots_base__)
+    return class_sealer(fields, defaults, base=__slots_base__)
 
 
-def tuple_sealer(required, defaults, everything):
+def tuple_sealer(defaults, fields):
     """
     This sealer returns an equivalent of a ``namedtuple``.
     """
+    baseclass_name = 'FieldsBase_for__{0}'.format('__'.join(fields))
     global_namespace, local_namespace = make_init_func(
-        everything, defaults,
-        header='def __new__(cls',
+        fields, defaults, baseclass_name,
+        header_name='__new__',
+        header_start='def {func_name}(cls',
+        header_end='):\n',
         super_call_start='return tuple.__new__(cls, (',
         super_call_end='))\n',
-        super_call_kw=False, set_attributes=False,
+        super_call_pass_kwargs=False, set_attributes=False,
     )
 
     def __getnewargs__(self):
@@ -213,11 +240,11 @@ def tuple_sealer(required, defaults, everything):
     def __repr__(self):
         return "{0}({1})".format(
             self.__class__.__name__,
-            ", ".join(a + "=" + repr(getattr(self, a)) for a in everything)
+            ", ".join(a + "=" + repr(getattr(self, a)) for a in fields)
         )
 
-    return type("TupleBase", (tuple,), dict(
-        [(name, property(itemgetter(i))) for i, name in enumerate(everything)],
+    return type(baseclass_name, (tuple,), dict(
+        [(name, property(itemgetter(i))) for i, name in enumerate(fields)],
         __new__=local_namespace['__new__'],
         __getnewargs__=__getnewargs__,
         __repr__=__repr__,
@@ -304,8 +331,8 @@ class _Factory(type):
 
             return type.__new__(
                 _Factory,
-                "Fields<%s>.%s" % (sealer.__name__, ".".join(all_fields))
-                if all_fields else "Fields<%s>" % sealer.__name__,
+                "Fields<{0}>.{1}".format(sealer.__name__, ".".join(all_fields))
+                if all_fields else "Fields<{0}>".format(sealer.__name__),
                 bases,
                 dict(
                     _Factory__required=required,
@@ -324,7 +351,7 @@ class _Factory(type):
             ])):
                 if names:
                     if len(set(names)) != 1:
-                        raise TypeError("Field layout conflict: fields in position %s have different names: %s" % (
+                        raise TypeError("Field layout conflict: fields in position {0} have different names: {1}".format(
                             pos,
                             ', '.join(repr(name) for name in names)
                         ))
@@ -346,7 +373,7 @@ class _Factory(type):
             if cls.__defaults and cls.__last_field is not None:
                 raise TypeError("Can't add required fields after fields with defaults.")
 
-            cls.__concrete = cls.__sealer(cls.__full_required, cls.__defaults, cls.__all_fields)
+            cls.__concrete = cls.__sealer(cls.__all_fields, cls.__defaults)
         return cls.__concrete
 
 
@@ -371,11 +398,10 @@ def factory(sealer, **sealer_options):
     Create a factory that will produce a class using the given ``sealer``.
 
     Args:
-        sealer (func): A function that takes ``required, defaults, everything`` as arguments, where:
+        sealer (func): A function that takes ``fields, defaults`` as arguments, where:
 
-            * required (list): A list of strings
-            * defaults (dict): A dict with all the defaults
-            * everything (list): A list with all the field names in the declared order.
+            * fields (list): A list with all the field names in the declared order.
+            * defaults (dict): A dict with all the defaults.
         sealer_options: Optional keyword arguments passed to ``sealer``.
     Return:
         A class on which you can do `.field1.field2.field3...`. When it's subclassed it "seals", and whatever the
@@ -386,11 +412,10 @@ def factory(sealer, **sealer_options):
         .. sourcecode:: pycon
 
 
-            >>> def sealer(required, defaults, everything):
+            >>> def sealer(fields, defaults):
             ...     print("Creating class with:")
-            ...     print("  required = {0}".format(required))
+            ...     print("  fields = {0}".format(fields))
             ...     print("  defaults = {0}".format(defaults))
-            ...     print("  everything = {0}".format(everything))
             ...     return object
             ...
             >>> Fields = factory(sealer)
@@ -398,9 +423,8 @@ def factory(sealer, **sealer_options):
             ...     pass
             ...
             Creating class with:
-              required = ('foo', 'bar')
+              fields = ['foo', 'bar', 'lorem', 'ipsum']
               defaults = OrderedDict([('lorem', 1), ('ipsum', 2)])
-              everything = ['foo', 'bar', 'lorem', 'ipsum']
             >>> Foo
             <class '...Foo'>
             >>> Foo.__bases__
@@ -412,6 +436,7 @@ Fields = _Factory()
 ConvertibleFields = factory(class_sealer, convertible=True)
 SlotsFields = factory(slots_class_sealer)
 BareFields = factory(class_sealer, comparable=False, printable=False)
+InheritableFields = factory(class_sealer, base=object, pass_kwargs=True)
 
 Tuple = factory(tuple_sealer)
 
