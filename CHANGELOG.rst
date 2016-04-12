@@ -2,6 +2,14 @@
 Changelog
 =========
 
+5.0.0 (2016-04-13)
+------------------
+
+* Added the ``fields.InheritableFields`` base. It allows subclassing and it's intended for multiple inheritance scenarios. Yes, 
+  yes, this enables lots pain and suffering, but some people just like it that way.
+* Simplified the interfaces for the builtin sealers (the required argument is gone as it was redundant, and the remaining 
+  arguments are swapped). Now they must be a function that take just two arguments: ``fields, defaults``.
+
 4.0.0 (2016-01-28)
 ------------------
 
