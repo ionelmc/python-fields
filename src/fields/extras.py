@@ -9,19 +9,21 @@ class ValidationError(Exception):
     pass
 
 
-def regex_validation_sealer(required, defaults, everything, RegexType=type(re.compile(""))):
+def regex_validation_sealer(fields, defaults, RegexType=type(re.compile(""))):
     """
     Example sealer that just does regex-based validation.
     """
+    required = set(fields) - set(defaults)
     if required:
-        raise TypeError("regex_validation_sealer doesn't support required arguments")
+        raise TypeError(
+            "regex_validation_sealer doesn't support required arguments. Fields that need fixing: %s" % required)
 
     klass = None
     kwarg_validators = dict(
         (key, val if isinstance(val, RegexType) else re.compile(val)) for key, val in defaults.items()
     )
     arg_validators = list(
-        kwarg_validators[key] for key in everything
+        kwarg_validators[key] for key in fields
     )
 
     def __init__(self, *args, **kwargs):

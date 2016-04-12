@@ -222,7 +222,7 @@ def slots_class_sealer(fields, defaults):
     return class_sealer(fields, defaults, base=__slots_base__)
 
 
-def tuple_sealer(defaults, fields):
+def tuple_sealer(fields, defaults):
     """
     This sealer returns an equivalent of a ``namedtuple``.
     """
