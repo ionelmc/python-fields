@@ -26,7 +26,7 @@ def read(*names, **kwargs):
 
 setup(
     name='fields',
-    version='4.0.0',
+    version='5.0.0',
     license='BSD',
     description='Container class boilerplate killer.',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),

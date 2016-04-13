@@ -22,7 +22,7 @@ try:
 except ImportError:
     from .py2ordereddict import OrderedDict
 
-__version__ = "4.0.0"
+__version__ = "5.0.0"
 __all__ = (
     'BareFields',
     'ComparableMixin',
