@@ -405,6 +405,12 @@ Testimonials
 
     -- `Isaac Dickinson <https://github.com/sundwarf>`_
 
+..
+
+    It's so bad you had to write a pylint plugin :)
+    
+    -- Colin Dunklau on IRC (#python) 
+
 Apologies
 =========
 
