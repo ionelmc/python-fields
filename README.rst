@@ -404,6 +404,14 @@ Testimonials
     I'm going to use this in my next project. You're a terrible person.
 
     -- `Isaac Dickinson <https://github.com/sundwarf>`_
+    
+..
+
+    <The-Compiler> cdunklau: just use https://github.com/ionelmc/python-fields or something :P
+    
+    <cdunklau> The-Compiler: dear lord no
+    
+    -- In IRC (#python)
 
 Apologies
 =========
