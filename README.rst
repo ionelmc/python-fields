@@ -332,13 +332,32 @@ Worth noting:
 
 * attrs_ is faster because it doesn't allow your class to be
   used as a mixin (it doesn't do any ``super(cls, self).__init__(...)`` for you).
-* the typical use-case doesn't allow you to have a custom ``__init__``. If you define a custom
-  ``__init__``, it will get overridden by the one attrs_ generates.
+* The typical use-case doesn't allow you to have a custom ``__init__``. You can
+  use `@attr.s(init=False)` that will allow you to implement your own ``__init__``.
+  However, you can't have your own ``__init__`` that calls attrs_ provided ``__init__`` 
+  (like in a subclassing scenario).
 * It works better with IDEs and source code analysis tools because of the
   attributes defined on the class.
+* It's more composable if you only use `@attr.s` decorated hierarchies. Example:
 
-All in all, attrs_ is a fast and minimal container library with no support for
-subclasses. Definitely worth considering.
+  .. sourcecode:: pycon
+
+    >>> @attr.s
+    ... class A(object):
+    ...     a = attr.ib()
+    ...     def get_a(self):
+    ...         return self.a
+    >>> @attr.s
+    ... class B(object):
+    ...     b = attr.ib()
+    >>> @attr.s
+    ... class C(B, A):
+    ...     c = attr.ib()
+    >>> C(1, 2, 3)
+    C(a=1, b=2, c=3)
+
+All in all, attrs_ is a fast and minimal container library that does support subclasses, 
+but quite differently than `fields`. Definitely worth considering.
 
 .. _attrs: <https://pypi.python.org/pypi/attrs
 
