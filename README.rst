@@ -1,6 +1,8 @@
-======
-Fields
-======
+========
+Overview
+========
+
+.. start-badges
 
 .. list-table::
     :stub-columns: 1
@@ -49,6 +51,7 @@ Fields
 .. |codeclimate| image:: https://codeclimate.com/github/ionelmc/python-fields/badges/gpa.svg
    :target: https://codeclimate.com/github/ionelmc/python-fields
    :alt: CodeClimate Quality Status
+
 .. |version| image:: https://img.shields.io/pypi/v/fields.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/fields
@@ -73,16 +76,12 @@ Fields
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/ionelmc/python-fields/
 
+
+.. end-badges
+
 Container class boilerplate killer.
 
-Features:
-
-* Human-readable ``__repr__``
-* Complete set of comparison methods
-* Keyword and positional argument support. Works like a normal class - you can override just about anything in the
-  subclass (eg: a custom ``__init__``). In contrast, `hynek/characteristic <https://github.com/hynek/characteristic>`_
-  forces different call schematics and calls your ``__init__`` with different arguments.
-
+* Free software: BSD license
 
 Installation
 ============

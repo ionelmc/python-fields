@@ -7,8 +7,8 @@ graft tests
 include .bumpversion.cfg
 include .coveragerc
 include .cookiecutterrc
+include .editorconfig
 include .isort.cfg
-include .pylintrc
 
 include AUTHORS.rst
 include CHANGELOG.rst
@@ -16,8 +16,6 @@ include CONTRIBUTING.rst
 include LICENSE
 include README.rst
 
-include bootstrap.py
-include conftest.py
 include tox.ini .travis.yml appveyor.yml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
