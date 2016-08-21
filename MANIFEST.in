@@ -17,5 +17,6 @@ include LICENSE
 include README.rst
 
 include tox.ini .travis.yml appveyor.yml
+include conftest.py
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
