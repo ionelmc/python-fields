@@ -7,6 +7,7 @@ from attr import Factory
 from attr import make_class
 from characteristic import Attribute
 from characteristic import attributes
+from cnamedtuple import namedtuple as cnamedtuple
 
 from fields import Fields
 from fields import SlotsFields
@@ -68,7 +69,7 @@ class dumb_class(object):
         self.c = c
 
 namedtuple_class = namedtuple("namedtuple_class", ["a", "b", "c"])
-
+cnamedtuple_class = cnamedtuple("namedtuple_class", ["a", "b", "c"])
 attrs_class = make_class("attrs_class", ["a", "b", "c"])
 
 
@@ -102,6 +103,9 @@ def test_tuple(benchmark):
 
 def test_namedtuple(benchmark):
     assert benchmark(partial(namedtuple_class, a=1, b=2, c=1))
+
+def test_cnamedtuple(benchmark):
+    assert benchmark(partial(cnamedtuple_class, a=1, b=2, c=1))
 
 
 def test_attrs_decorated_class(benchmark):
