@@ -435,6 +435,7 @@ def factory(sealer, **sealer_options):
     """
     return _Factory(sealer=_SealerWrapper(sealer, **sealer_options))
 
+
 Fields = _Factory()
 ConvertibleFields = factory(class_sealer, convertible=True)
 SlotsFields = factory(slots_class_sealer)

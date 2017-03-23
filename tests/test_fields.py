@@ -1,26 +1,28 @@
 from __future__ import print_function
 
 import pickle
-try:
-    import cPickle
-except ImportError:
-    import pickle as cPickle
 from functools import partial
-from itertools import chain
 
 from pytest import fixture
 from pytest import raises
 
-from fields import BareFields, make_init_func, InheritableFields
+from fields import BareFields
 from fields import ComparableMixin
 from fields import ConvertibleFields
 from fields import ConvertibleMixin
 from fields import Fields
+from fields import InheritableFields
 from fields import PrintableMixin
 from fields import SlotsFields
 from fields import Tuple
+from fields import make_init_func
 from fields.extras import RegexValidate
 from fields.extras import ValidationError
+
+try:
+    import cPickle
+except ImportError:
+    import pickle as cPickle
 
 
 @fixture(params=[
