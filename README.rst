@@ -14,7 +14,8 @@ Overview
         | |coveralls| |codecov|
         | |landscape| |scrutinizer| |codacy| |codeclimate|
     * - package
-      - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
+      - | |version| |wheel| |supported-versions| |supported-implementations|
+        | |commits-since|
 
 .. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
     :target: https://readthedocs.org/projects/python-fields
@@ -52,27 +53,27 @@ Overview
    :target: https://codeclimate.com/github/ionelmc/python-fields
    :alt: CodeClimate Quality Status
 
-.. |version| image:: https://img.shields.io/pypi/v/fields.svg?style=flat
+.. |version| image:: https://img.shields.io/pypi/v/fields.svg
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/fields
 
-.. |downloads| image:: https://img.shields.io/pypi/dm/fields.svg?style=flat
-    :alt: PyPI Package monthly downloads
-    :target: https://pypi.python.org/pypi/fields
+.. |commits-since| image:: https://img.shields.io/github/commits-since/ionelmc/python-fields/v5.0.0.svg
+    :alt: Commits since latest release
+    :target: https://github.com/ionelmc/python-fields/compare/v5.0.0...master
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/fields.svg?style=flat
+.. |wheel| image:: https://img.shields.io/pypi/wheel/fields.svg
     :alt: PyPI Wheel
     :target: https://pypi.python.org/pypi/fields
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/fields.svg?style=flat
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/fields.svg
     :alt: Supported versions
     :target: https://pypi.python.org/pypi/fields
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/fields.svg?style=flat
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/fields.svg
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/fields
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.svg?style=flat
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.svg
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/ionelmc/python-fields/
 
