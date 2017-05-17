@@ -357,7 +357,9 @@ Worth noting:
     C(a=1, b=2, c=3)
 
 All in all, attrs_ is a fast and minimal container library that does support subclasses, 
-but quite differently than `fields`. Definitely worth considering.
+but quite differently than ``fields``. Definitely worth considering. 
+
+Also, nowdays it has more features than ``fields``. See `#6 <https://github.com/ionelmc/python-fields/issues/6>`_.  
 
 .. _attrs: <https://pypi.python.org/pypi/attrs
 
