@@ -320,7 +320,7 @@ Now this is a very difficult question.
 
 Consider this typical use-case::
 
-.. sourcecode:: pycon
+.. code:: pycon
 
     >>> import attr
     >>> @attr.s
@@ -333,12 +333,12 @@ Worth noting:
 * attrs_ is faster because it doesn't allow your class to be
   used as a mixin (it doesn't do any ``super(cls, self).__init__(...)`` for you).
 * The typical use-case doesn't allow you to have a custom ``__init__``. You can
-  use `@attr.s(init=False)` that will allow you to implement your own ``__init__``.
+  use ``@attr.s(init=False)`` that will allow you to implement your own ``__init__``.
   However, you can't have your own ``__init__`` that calls attrs_ provided ``__init__`` 
   (like in a subclassing scenario).
 * It works better with IDEs and source code analysis tools because of the
   attributes defined on the class.
-* It's more composable if you only use `@attr.s` decorated hierarchies. Example:
+* It's more composable if you only use ``@attr.s`` decorated hierarchies. Example:
 
   .. sourcecode:: pycon
 
