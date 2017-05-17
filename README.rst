@@ -318,7 +318,7 @@ Why not ``attrs``?
 
 Now this is a very difficult question.
 
-Consider this typical use-case::
+Consider this typical use-case:
 
 .. code:: pycon
 
