@@ -12,16 +12,14 @@ Overview
     * - tests
       - | |travis| |appveyor| |requires|
         | |coveralls| |codecov|
-        | |landscape| |scrutinizer| |codacy| |codeclimate|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
-
 .. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
     :target: https://readthedocs.org/projects/python-fields
     :alt: Documentation Status
 
-.. |travis| image:: https://travis-ci.org/ionelmc/python-fields.svg?branch=master
+.. |travis| image:: https://api.travis-ci.org/ionelmc/python-fields.svg?branch=master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/ionelmc/python-fields
 
@@ -41,48 +39,33 @@ Overview
     :alt: Coverage Status
     :target: https://codecov.io/github/ionelmc/python-fields
 
-.. |landscape| image:: https://landscape.io/github/ionelmc/python-fields/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/ionelmc/python-fields/master
-    :alt: Code Quality Status
-
-.. |codacy| image:: https://img.shields.io/codacy/REPLACE_WITH_PROJECT_ID.svg?style=flat
-    :target: https://www.codacy.com/app/ionelmc/python-fields
-    :alt: Codacy Code Quality Status
-
-.. |codeclimate| image:: https://codeclimate.com/github/ionelmc/python-fields/badges/gpa.svg
-   :target: https://codeclimate.com/github/ionelmc/python-fields
-   :alt: CodeClimate Quality Status
-
 .. |version| image:: https://img.shields.io/pypi/v/fields.svg
     :alt: PyPI Package latest release
-    :target: https://pypi.python.org/pypi/fields
+    :target: https://pypi.org/project/fields
+
+.. |wheel| image:: https://img.shields.io/pypi/wheel/fields.svg
+    :alt: PyPI Wheel
+    :target: https://pypi.org/project/fields
+
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/fields.svg
+    :alt: Supported versions
+    :target: https://pypi.org/project/fields
+
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/fields.svg
+    :alt: Supported implementations
+    :target: https://pypi.org/project/fields
 
 .. |commits-since| image:: https://img.shields.io/github/commits-since/ionelmc/python-fields/v5.0.0.svg
     :alt: Commits since latest release
     :target: https://github.com/ionelmc/python-fields/compare/v5.0.0...master
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/fields.svg
-    :alt: PyPI Wheel
-    :target: https://pypi.python.org/pypi/fields
-
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/fields.svg
-    :alt: Supported versions
-    :target: https://pypi.python.org/pypi/fields
-
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/fields.svg
-    :alt: Supported implementations
-    :target: https://pypi.python.org/pypi/fields
-
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/ionelmc/python-fields/master.svg
-    :alt: Scrutinizer Status
-    :target: https://scrutinizer-ci.com/g/ionelmc/python-fields/
 
 
 .. end-badges
 
 Container class boilerplate killer.
 
-* Free software: BSD license
+* Free software: BSD 2-Clause License
 
 Installation
 ============
