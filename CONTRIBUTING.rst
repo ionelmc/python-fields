@@ -41,7 +41,7 @@ To set up `python-fields` for local development:
    (look for the "Fork" button).
 2. Clone your fork locally::
 
-    git clone git@github.com:your_name_here/python-fields.git
+    git clone git@github.com:ionelmc/python-fields.git
 
 3. Create a branch for local development::
 
@@ -49,7 +49,7 @@ To set up `python-fields` for local development:
 
    Now you can make your changes locally.
 
-4. When you're done making changes, run all the checks, doc builder and spell checker with `tox <http://tox.readthedocs.io/en/latest/install.html>`_ one command::
+4. When you're done making changes, run all the checks, doc builder and spell checker with `tox <https://tox.readthedocs.io/en/latest/install.html>`_ one command::
 
     tox
 
@@ -83,7 +83,7 @@ Tips
 
 To run a subset of tests::
 
-    tox -e envname -- py.test -k test_myfeature
+    tox -e envname -- pytest -k test_myfeature
 
 To run all the test environments in *parallel* (you need to ``pip install detox``)::
 
