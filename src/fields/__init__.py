@@ -12,10 +12,9 @@ How it works: the library is composed of 2 major parts:
 """
 import linecache
 import sys
+import zlib
 from itertools import chain
 from operator import itemgetter
-
-import zlib
 
 try:
     from collections import OrderedDict

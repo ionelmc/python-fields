@@ -2,10 +2,10 @@ from collections import namedtuple
 from functools import partial
 
 import pytest
-from attr import ib as badly_named_field
-from attr import s as badly_named_class_decorator
 from attr import Factory
+from attr import ib as badly_named_field
 from attr import make_class
+from attr import s as badly_named_class_decorator
 from characteristic import Attribute
 from characteristic import attributes
 
@@ -82,7 +82,8 @@ namedtuple_class = namedtuple("namedtuple_class", ["a", "b", "c"])
 if cnamedtuple:
     cnamedtuple_class = cnamedtuple("namedtuple_class", ["a", "b", "c"])
 else:
-    cnamedtuple_class = lambda *args, **kwargs: pytest.skip("Not available.")
+    def cnamedtuple_class(*args, **kwargs):
+        pytest.skip("Not available.")
 attrs_class = make_class("attrs_class", ["a", "b", "c"])
 
 

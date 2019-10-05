@@ -344,7 +344,7 @@ but quite differently than ``fields``. Definitely worth considering.
 
 Also, nowdays it has more features than ``fields``. See `#6 <https://github.com/ionelmc/python-fields/issues/6>`_.  
 
-.. _attrs: <https://pypi.python.org/pypi/attrs
+.. _attrs: https://pypi.python.org/pypi/attrs
 
 Won't this confuse ``pylint``?
 ------------------------------
@@ -407,7 +407,7 @@ Testimonials
 
     I'm going to use this in my next project. You're a terrible person.
 
-    -- `Isaac Dickinson <https://github.com/sundwarf>`_
+    -- Isaac Dickinson
 
 ..
 
