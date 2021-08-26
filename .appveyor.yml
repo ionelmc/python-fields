@@ -1,5 +1,20 @@
 version: '{branch}-{build}'
 build: off
+image:
+  - Visual Studio 2019
+  - Visual Studio 2015
+matrix:
+  exclude:
+    - image: Visual Studio 2019
+      PYTHON_VERSION: 2.7
+    - image: Visual Studio 2015
+      PYTHON_VERSION: '3.6'
+    - image: Visual Studio 2015
+      PYTHON_VERSION: '3.7'
+    - image: Visual Studio 2015
+      PYTHON_VERSION: '3.8'
+    - image: Visual Studio 2015
+      PYTHON_VERSION: '3.9'
 environment:
   global:
     COVERALLS_EXTRAS: '-v'
@@ -20,7 +35,6 @@ environment:
       PYTHON_HOME: C:\Python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-      WINDOWS_SDK_VERSION: v7.0
     - TOXENV: py27-nocov
       TOXPYTHON: C:\Python27\python.exe
       PYTHON_HOME: C:\Python27
@@ -33,53 +47,6 @@ environment:
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
       WHEEL_PATH: .tox/dist
-      WINDOWS_SDK_VERSION: v7.0
-    - TOXENV: py34-cover,codecov,coveralls
-      TOXPYTHON: C:\Python34\python.exe
-      PYTHON_HOME: C:\Python34
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '32'
-    - TOXENV: py34-cover,codecov,coveralls
-      TOXPYTHON: C:\Python34-x64\python.exe
-      PYTHON_HOME: C:\Python34-x64
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '64'
-      WINDOWS_SDK_VERSION: v7.1
-    - TOXENV: py34-nocov
-      TOXPYTHON: C:\Python34\python.exe
-      PYTHON_HOME: C:\Python34
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '32'
-      WHEEL_PATH: .tox/dist
-    - TOXENV: py34-nocov
-      TOXPYTHON: C:\Python34-x64\python.exe
-      PYTHON_HOME: C:\Python34-x64
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '64'
-      WHEEL_PATH: .tox/dist
-      WINDOWS_SDK_VERSION: v7.1
-    - TOXENV: py35-cover,codecov,coveralls
-      TOXPYTHON: C:\Python35\python.exe
-      PYTHON_HOME: C:\Python35
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '32'
-    - TOXENV: py35-cover,codecov,coveralls
-      TOXPYTHON: C:\Python35-x64\python.exe
-      PYTHON_HOME: C:\Python35-x64
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '64'
-    - TOXENV: py35-nocov
-      TOXPYTHON: C:\Python35\python.exe
-      PYTHON_HOME: C:\Python35
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '32'
-      WHEEL_PATH: .tox/dist
-    - TOXENV: py35-nocov
-      TOXPYTHON: C:\Python35-x64\python.exe
-      PYTHON_HOME: C:\Python35-x64
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '64'
-      WHEEL_PATH: .tox/dist
     - TOXENV: py36-cover,codecov,coveralls
       TOXPYTHON: C:\Python36\python.exe
       PYTHON_HOME: C:\Python36
@@ -122,6 +89,50 @@ environment:
       TOXPYTHON: C:\Python37-x64\python.exe
       PYTHON_HOME: C:\Python37-x64
       PYTHON_VERSION: '3.7'
+      PYTHON_ARCH: '64'
+      WHEEL_PATH: .tox/dist
+    - TOXENV: py38-cover,codecov,coveralls
+      TOXPYTHON: C:\Python38\python.exe
+      PYTHON_HOME: C:\Python38
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '32'
+    - TOXENV: py38-cover,codecov,coveralls
+      TOXPYTHON: C:\Python38-x64\python.exe
+      PYTHON_HOME: C:\Python38-x64
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
+    - TOXENV: py38-nocov
+      TOXPYTHON: C:\Python38\python.exe
+      PYTHON_HOME: C:\Python38
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '32'
+      WHEEL_PATH: .tox/dist
+    - TOXENV: py38-nocov
+      TOXPYTHON: C:\Python38-x64\python.exe
+      PYTHON_HOME: C:\Python38-x64
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
+      WHEEL_PATH: .tox/dist
+    - TOXENV: py39-cover,codecov,coveralls
+      TOXPYTHON: C:\Python39\python.exe
+      PYTHON_HOME: C:\Python39
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '32'
+    - TOXENV: py39-cover,codecov,coveralls
+      TOXPYTHON: C:\Python39-x64\python.exe
+      PYTHON_HOME: C:\Python39-x64
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '64'
+    - TOXENV: py39-nocov
+      TOXPYTHON: C:\Python39\python.exe
+      PYTHON_HOME: C:\Python39
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '32'
+      WHEEL_PATH: .tox/dist
+    - TOXENV: py39-nocov
+      TOXPYTHON: C:\Python39-x64\python.exe
+      PYTHON_HOME: C:\Python39-x64
+      PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
       WHEEL_PATH: .tox/dist
 init:
@@ -130,11 +141,10 @@ init:
 install:
   - '%PYTHON_HOME%\python -mpip install --progress-bar=off tox -rci/requirements.txt'
   - '%PYTHON_HOME%\Scripts\virtualenv --version'
-  - '%PYTHON_HOME%\Scripts\easy_install --version'
   - '%PYTHON_HOME%\Scripts\pip --version'
   - '%PYTHON_HOME%\Scripts\tox --version'
 test_script:
-  - cmd /E:ON /V:ON /C .\ci\appveyor-with-compiler.cmd %PYTHON_HOME%\Scripts\tox
+  - %PYTHON_HOME%\Scripts\tox
 on_failure:
   - ps: dir "env:"
   - ps: get-content .tox\*\log\*

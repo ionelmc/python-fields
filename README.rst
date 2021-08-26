@@ -16,12 +16,12 @@ Overview
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
 .. |docs| image:: https://readthedocs.org/projects/python-fields/badge/?style=flat
-    :target: https://readthedocs.org/projects/python-fields
+    :target: https://python-fields.readthedocs.io/
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/ionelmc/python-fields.svg?branch=master
+.. |travis| image:: https://api.travis-ci.com/ionelmc/python-fields.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/ionelmc/python-fields
+    :target: https://travis-ci.com/github/ionelmc/python-fields
 
 .. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/python-fields?branch=master&svg=true
     :alt: AppVeyor Build Status
@@ -35,7 +35,7 @@ Overview
     :alt: Coverage Status
     :target: https://coveralls.io/r/ionelmc/python-fields
 
-.. |codecov| image:: https://codecov.io/github/ionelmc/python-fields/coverage.svg?branch=master
+.. |codecov| image:: https://codecov.io/gh/ionelmc/python-fields/branch/master/graphs/badge.svg?branch=master
     :alt: Coverage Status
     :target: https://codecov.io/github/ionelmc/python-fields
 

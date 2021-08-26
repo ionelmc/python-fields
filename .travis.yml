@@ -1,10 +1,12 @@
 language: python
 dist: xenial
+virt: lxd
 cache: false
 env:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
     - SEGFAULT_SIGNALS=all
+    - LANG=en_US.UTF-8
 matrix:
   include:
     - python: '3.6'
@@ -20,18 +22,6 @@ matrix:
         - TOXENV=py27-nocov
       python: '2.7'
     - env:
-        - TOXENV=py34-cover,codecov,coveralls
-      python: '3.4'
-    - env:
-        - TOXENV=py34-nocov
-      python: '3.4'
-    - env:
-        - TOXENV=py35-cover,codecov,coveralls
-      python: '3.5'
-    - env:
-        - TOXENV=py35-nocov
-      python: '3.5'
-    - env:
         - TOXENV=py36-cover,codecov,coveralls
       python: '3.6'
     - env:
@@ -43,6 +33,18 @@ matrix:
     - env:
         - TOXENV=py37-nocov
       python: '3.7'
+    - env:
+        - TOXENV=py38-cover,codecov,coveralls
+      python: '3.8'
+    - env:
+        - TOXENV=py38-nocov
+      python: '3.8'
+    - env:
+        - TOXENV=py39-cover,codecov,coveralls
+      python: '3.9'
+    - env:
+        - TOXENV=py39-nocov
+      python: '3.9'
     - env:
         - TOXENV=pypy-cover,codecov,coveralls
       python: 'pypy'
@@ -64,14 +66,13 @@ before_install:
 install:
   - python -mpip install --progress-bar=off tox -rci/requirements.txt
   - virtualenv --version
-  - easy_install --version
   - pip --version
   - tox --version
 script:
   - tox -v
 after_failure:
-  - more .tox/log/* | cat
-  - more .tox/*/log/* | cat
+  - cat .tox/log/*
+  - cat .tox/*/log/*
 notifications:
   email:
     on_success: never
