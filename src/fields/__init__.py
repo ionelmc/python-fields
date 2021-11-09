@@ -5,7 +5,7 @@ How it works: the library is composed of 2 major parts:
   and default values).
 * The `factory`. A metaclass that implements attribute/item access, so you can do ``Fields.a.b.c``. On each
   getattr/getitem it returns a new instance with the new state. Its ``__new__`` method takes extra arguments to store
-  the contruction state and it works in two ways:
+  the construction state and it works in two ways:
 
   * Construction phase (there are no bases). Make new instances of the `Factory` with new state.
   * Usage phase. When subclassed (there are bases) it will use the sealer to return the final class.

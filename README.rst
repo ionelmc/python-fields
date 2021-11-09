@@ -229,7 +229,7 @@ Yes, ofcourse.
 Why not ``namedtuple``?
 ------------------------
 
-It's ugly, repetivive and unflexible. Compare this:
+It's ugly, repetitive and inflexible. Compare this:
 
 .. code:: python
 
@@ -342,7 +342,7 @@ Worth noting:
 All in all, attrs_ is a fast and minimal container library that does support subclasses, 
 but quite differently than ``fields``. Definitely worth considering. 
 
-Also, nowdays it has more features than ``fields``. See `#6 <https://github.com/ionelmc/python-fields/issues/6>`_.  
+Also, nowadays it has more features than ``fields``. See `#6 <https://github.com/ionelmc/python-fields/issues/6>`_.  
 
 .. _attrs: https://pypi.python.org/pypi/attrs
 
@@ -375,7 +375,7 @@ Testimonials
 
 ..
 
-    Fields is completey bat-shit insane, but kind of cool.
+    Fields is completely bat-shit insane, but kind of cool.
     
     -- Someone on IRC (#python)
 
