@@ -258,7 +258,7 @@ def test_unequal_same_class(CmpC):
 
 def test_unequal_different_class(CmpC):
     """
-    Unequal objects of differnt type are detected even if their attributes
+    Unequal objects of different type are detected even if their attributes
     match.
     """
     class NotCmpC(object):
